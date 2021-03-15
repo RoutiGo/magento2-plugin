@@ -1,0 +1,34 @@
+{
+  "name": "tig/routigo-magento2",
+  "description": "Allows you to send your order data to Routigo to set up route plans.",
+  "require": {
+    "magento/framework": "~102.0|~103.0",
+    "php": "~7.2.0|~7.3.0|~7.4.0"
+  },
+  "type": "magento2-module",
+  "license": "CC-BY-NC-ND-3.0",
+  "authors": [
+    {
+      "name": "TIG",
+      "email": "support@tig.nl",
+      "homepage": "https://tig.nl"
+    }
+  ],
+  "version": "v1.1.0",
+  "autoload": {
+    "files": [
+      "registration.php"
+    ],
+    "psr-4": {
+      "TIG\\Routigo\\": ""
+    }
+  },
+  "require-dev": {
+  },
+  "repositories": {
+    "magento": {
+      "type": "composer",
+      "url": "https://repo.magento.com/"
+    }
+  }
+}
