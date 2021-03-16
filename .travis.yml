@@ -13,8 +13,8 @@ matrix:
 
 before_script:
   - export PATH=$PATH:$HOME/.composer/vendor/bin
-  - composer global require object-calisthenics/phpcs-calisthenics-rules:dev-master
-  - composer global require magento/magento-coding-standard:dev-master
+  - composer global require object-calisthenics/phpcs-calisthenics-rules
+  - composer global require magento/magento-coding-standard
 
 script:
   - phpcs --standard=Magento2,ObjectCalisthenics .
