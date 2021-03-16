@@ -44,7 +44,6 @@ class Tab extends Template implements RendererInterface
     const EXTENSION_VERSION = '1.1.0';
     const XPATH_ROUTIGO_SUPPORTED_MAGENTO_VERSION = 'tig_routigo/supported_magento_version';
 
-    // @codingStandardsIgnoreLine
     protected $_template = 'TIG_Routigo::config/support/tab.phtml';
 
     /** @var array */
@@ -136,33 +135,28 @@ class Tab extends Template implements RendererInterface
     /**
      * @return bool|int
      */
-    /** @codingStandardsIgnoreStart */
     public function phpVersionCheck()
     {
         $magentoVersion = $this->getMagentoVersionArray();
         $phpVersion     = $this->getPhpVersionArray();
-
         if (!is_array($magentoVersion) || !is_array($phpVersion)) {
             return - 1;
         }
 
-        $magentoMajorMinor = $magentoVersion[0] . '.' . $magentoVersion[1];
-        $phpMajorMinor     = $phpVersion[0] . '.' . $phpVersion[1];
         $phpPatch          = (int) $phpVersion[2];
 
-        if (!isset($this->phpVersionSupport[$magentoMajorMinor])
-            || !isset($this->phpVersionSupport[$magentoMajorMinor][$phpMajorMinor])) {
+        if (!isset($this->phpVersionSupport[$magentoVersion['major_minor']])
+            || !isset($this->phpVersionSupport[$magentoVersion['major_minor']][$phpVersion['major_minor']])) {
             return 0;
         }
 
-        $currentVersion = $this->phpVersionSupport[$magentoMajorMinor][$phpMajorMinor];
+        $currentVersion = $this->phpVersionSupport[$magentoVersion['major_minor']][$phpVersion['major_minor']];
         if (isset($currentVersion)) {
             return $this->getPhpVersion($phpPatch, $currentVersion);
         }
 
         return - 1;
     }
-    /** @codingStandardsIgnoreEnd */
 
     /**
      * @return array|bool
@@ -173,11 +167,15 @@ class Tab extends Template implements RendererInterface
 
         if (function_exists('phpversion')) {
             $version = explode('.', phpversion());
+            $version['full_version'] = phpversion();
         }
 
         if (defined('PHP_VERSION')) {
             $version = explode('.', PHP_VERSION);
+            $version['full_version'] = PHP_VERSION;
         }
+
+        $version['major_minor'] = $version[0] . '.' . $version[1];
 
         return $version;
     }
@@ -193,6 +191,8 @@ class Tab extends Template implements RendererInterface
         if (isset($currentVersion)) {
             $version = explode('.', $currentVersion);
         }
+
+        $version['major_minor'] = $version[0] . '.' . $version[1];
 
         return $version;
     }

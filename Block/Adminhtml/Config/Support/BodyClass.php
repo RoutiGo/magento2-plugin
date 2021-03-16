@@ -40,7 +40,6 @@ class BodyClass extends Template implements BlockInterface
     /**
      * @return \Magento\Backend\Block\Template
      */
-    // @codingStandardsIgnoreLine
     protected function _prepareLayout()
     {
         if ($this->_request->getParam('section') == 'tig_routigo') {

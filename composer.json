@@ -24,11 +24,21 @@
     }
   },
   "require-dev": {
+    "magento/magento-coding-standard": "^6.0",
+    "object-calisthenics/phpcs-calisthenics-rules": "^3.9"
   },
   "repositories": {
     "magento": {
       "type": "composer",
       "url": "https://repo.magento.com/"
     }
+  },
+  "scripts": {
+    "post-install-cmd": [
+      "([ $COMPOSER_DEV_MODE -eq 0 ] || vendor/bin/phpcs --config-set installed_paths ../../magento/magento-coding-standard/,../../object-calisthenics/phpcs-calisthenics-rules/src)"
+    ],
+    "post-update-cmd": [
+      "([ $COMPOSER_DEV_MODE -eq 0 ] || vendor/bin/phpcs --config-set installed_paths ../../magento/magento-coding-standard/,../../object-calisthenics/phpcs-calisthenics-rules/src)"
+    ]
   }
 }

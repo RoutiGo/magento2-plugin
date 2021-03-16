@@ -46,7 +46,6 @@ class Fieldset extends MagentoFieldset
     /**
      * {@inheritdoc}
      */
-    // @codingStandardsIgnoreLine
     protected function _getFrontendClass($element)
     {
         $mode = $this->_scopeConfig->getValue(static::XPATH_ROUTIGO_GENERAL_MODE);

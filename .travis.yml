@@ -1,0 +1,32 @@
+sudo: required
+dist: trusty
+addons:
+  apt:
+    packages:
+    - mysql-server-5.7
+    - mysql-client-core-5.7
+    - mysql-client-5.7
+
+language: php
+
+matrix:
+  include:
+    - php: 7.3
+      env: MAGENTO_VERSION=2.3.6-p1
+    - php: 7.4
+      env: MAGENTO_VERSION=2.4.2 CODE_COVERAGE=true
+
+before_script:
+  - export PATH=$PATH:$HOME/.composer/vendor/bin
+  - composer global require object-calisthenics/phpcs-calisthenics-rules:dev-master
+  - composer global require magento/magento-coding-standard:dev-master
+
+script:
+  - phpcs --standard=Magento2,ObjectCalisthenics .
+
+cache:
+  directories:
+  - node_modules
+  - $HOME/.download_cache
+  - $HOME/.composer
+  - $HOME/.cache/composer
