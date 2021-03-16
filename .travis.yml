@@ -1,20 +1,15 @@
-sudo: required
-dist: trusty
-addons:
-  apt:
-    packages:
-    - mysql-server-5.7
-    - mysql-client-core-5.7
-    - mysql-client-5.7
-
+dist: xenial
 language: php
+
+services:
+  - mysql
 
 matrix:
   include:
     - php: 7.3
       env: MAGENTO_VERSION=2.3.6-p1
     - php: 7.4
-      env: MAGENTO_VERSION=2.4.2 CODE_COVERAGE=true
+      env: MAGENTO_VERSION=2.4.2
 
 before_script:
   - export PATH=$PATH:$HOME/.composer/vendor/bin
