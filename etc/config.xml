@@ -36,7 +36,8 @@
         <carriers>
             <tig_routigo>
                 <active>1</active>
-                <sallowspecific>0</sallowspecific>
+                <sallowspecific>1</sallowspecific>
+                <specificcountry>NL</specificcountry>
                 <model>TIG\Routigo\Model\Carrier\Routigo</model>
                 <name>Routigo</name>
                 <price>5.00</price>

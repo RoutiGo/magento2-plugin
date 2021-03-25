@@ -86,6 +86,10 @@ class Routigo extends AbstractCarrier implements CarrierInterface
             return false;
         }
 
+        if  ($this->$this->getConfigFlag('specificcountry') !== 'NL') {
+            return false;
+        }
+
         /** @var \Magento\Shipping\Model\Rate\Result $result */
         $result = $this->rateResultFactory->create();
 
