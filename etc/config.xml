@@ -41,7 +41,7 @@
                 <model>TIG\Routigo\Model\Carrier\Routigo</model>
                 <name>Routigo</name>
                 <price>5.00</price>
-                <title>Flat Rate</title>
+                <title>Routigo</title>
                 <type>I</type>
                 <specificerrmsg>This shipping method is not available. To use this shipping method, please contact us.</specificerrmsg>
             </tig_routigo>

@@ -52,6 +52,8 @@ class Routigo extends AbstractCarrier implements CarrierInterface
      */
     private $rateMethodFactory;
 
+    const TIG_ROUTIGO = 'tig_routigo';
+
     /**
      * Routigo constructor.
      *
@@ -78,7 +80,7 @@ class Routigo extends AbstractCarrier implements CarrierInterface
     /**
      * @param RateRequest $request
      *
-     * @return bool|\Magento\Framework\DataObject|\Magento\Shipping\Model\Rate\Result|null
+     * @return array|bool|\Magento\Framework\DataObject|\Magento\Shipping\Model\Rate\Result|null
      */
     public function collectRates(RateRequest $request)
     {
@@ -88,6 +90,13 @@ class Routigo extends AbstractCarrier implements CarrierInterface
 
         if  ($this->$this->getConfigFlag('specificcountry') !== 'NL') {
             return false;
+        }
+
+        if ($request->getFreeShipping()) {
+            return [
+                'price' => 0,
+                'cost' => 0,
+            ];
         }
 
         /** @var \Magento\Shipping\Model\Rate\Result $result */
@@ -108,7 +117,7 @@ class Routigo extends AbstractCarrier implements CarrierInterface
      */
     public function getAllowedMethods()
     {
-        return ['tig_routigo' => $this->getConfigData('name')];
+        return [self::TIG_ROUTIGO => $this->getConfigData('name')];
     }
 
     /**
@@ -121,10 +130,10 @@ class Routigo extends AbstractCarrier implements CarrierInterface
         /** @var \Magento\Quote\Model\Quote\Address\RateResult\Method $method */
         $method = $this->rateMethodFactory->create();
 
-        $method->setCarrier('tig_routigo');
+        $method->setCarrier(self::TIG_ROUTIGO);
         $method->setCarrierTitle($this->getConfigData('title'));
 
-        $method->setMethod('tig_routigo');
+        $method->setMethod(self::TIG_ROUTIGO);
         $method->setMethodTitle($this->getConfigData('name'));
 
         $amount = $this->getConfigData('price');
