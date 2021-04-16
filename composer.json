@@ -24,8 +24,6 @@
     }
   },
   "require-dev": {
-    "magento/magento-coding-standard": "^6.0",
-    "object-calisthenics/phpcs-calisthenics-rules": "^3.9"
   },
   "repositories": {
     "magento": {
