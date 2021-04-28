@@ -80,7 +80,7 @@ class Routigo extends AbstractCarrier implements CarrierInterface
     /**
      * @param RateRequest $request
      *
-     * @return array|bool|\Magento\Framework\DataObject|\Magento\Shipping\Model\Rate\Result|null
+     * @return bool|\Magento\Framework\DataObject|\Magento\Shipping\Model\Rate\Result|null
      */
     public function collectRates(RateRequest $request)
     {
@@ -92,17 +92,10 @@ class Routigo extends AbstractCarrier implements CarrierInterface
             return false;
         }
 
-        if ($request->getFreeShipping()) {
-            return [
-                'price' => 0,
-                'cost' => 0,
-            ];
-        }
-
         /** @var \Magento\Shipping\Model\Rate\Result $result */
         $result = $this->rateResultFactory->create();
 
-        $method = $this->getMethod();
+        $method = $this->getMethod($request);
 
         $result->append($method);
 
@@ -125,7 +118,7 @@ class Routigo extends AbstractCarrier implements CarrierInterface
      *
      * @return \Magento\Quote\Model\Quote\Address\RateResult\Method
      */
-    public function getMethod()
+    public function getMethod($request)
     {
         /** @var \Magento\Quote\Model\Quote\Address\RateResult\Method $method */
         $method = $this->rateMethodFactory->create();
@@ -137,6 +130,10 @@ class Routigo extends AbstractCarrier implements CarrierInterface
         $method->setMethodTitle($this->getConfigData('name'));
 
         $amount = $this->getConfigData('price');
+
+        if ($request->getFreeShipping()) {
+            $amount = 0;
+        }
 
         $method->setPrice($amount);
         $method->setCost($amount);
