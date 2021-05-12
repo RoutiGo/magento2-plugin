@@ -29,25 +29,36 @@
  * @copyright   Copyright (c) Total Internet Group B.V. https://tig.nl/copyright
  * @license     http://creativecommons.org/licenses/by-nc-nd/3.0/nl/deed.en_US
  */
-namespace TIG\Routigo\Config\Source\General;
 
-use Magento\Framework\Option\ArrayInterface;
+namespace TIG\Routigo\Model;
 
-class Mode implements ArrayInterface
+use Magento\Framework\App\Config\ScopeConfigInterface as ScopeConfig;
+use Magento\Store\Model\ScopeInterface;
+
+abstract class AbstractConfigProvider
 {
+    /** @var ScopeConfig ScopeConfig */
+    private $scopeConfig;
+
     /**
-     * Return mode option array
-     * @return array
+     * Config constructor.
+     *
+     * @param ScopeConfig $scopeConfig
      */
-    public function toOptionArray()
+    public function __construct(
+        ScopeConfig $scopeConfig
+    ) {
+        $this->scopeConfig = $scopeConfig;
+    }
+
+    /**
+     * @param $path
+     * @param $store
+     *
+     * @return mixed
+     */
+    public function getConfigValue($path, $store = null)
     {
-        // @codingStandardsIgnoreStart
-        $options = [
-            ['value' => '1', 'label' => __('Live')],
-            ['value' => '2', 'label' => __('Test')],
-            ['value' => '0', 'label' => __('Off')],
-        ];
-        // @codingStandardsIgnoreEnd
-        return $options;
+        return $this->scopeConfig->getValue($path, ScopeInterface::SCOPE_STORE, $store);
     }
 }

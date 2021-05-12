@@ -1,5 +1,6 @@
-<?php
-/**
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+ *
  *
  *          ..::..
  *     ..::::::::::::..
@@ -28,26 +29,12 @@
  *
  * @copyright   Copyright (c) Total Internet Group B.V. https://tig.nl/copyright
  * @license     http://creativecommons.org/licenses/by-nc-nd/3.0/nl/deed.en_US
- */
-namespace TIG\Routigo\Config\Source\General;
-
-use Magento\Framework\Option\ArrayInterface;
-
-class Mode implements ArrayInterface
-{
-    /**
-     * Return mode option array
-     * @return array
-     */
-    public function toOptionArray()
-    {
-        // @codingStandardsIgnoreStart
-        $options = [
-            ['value' => '1', 'label' => __('Live')],
-            ['value' => '2', 'label' => __('Test')],
-            ['value' => '0', 'label' => __('Off')],
-        ];
-        // @codingStandardsIgnoreEnd
-        return $options;
-    }
-}
+ *
+-->
+<config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="urn:magento:framework:App/etc/routes.xsd">
+    <router id="admin">
+        <route frontName="routigo" id="routigo">
+            <module before="Magento_Backend" name="TIG_Routigo"/>
+        </route>
+    </router>
+</config>

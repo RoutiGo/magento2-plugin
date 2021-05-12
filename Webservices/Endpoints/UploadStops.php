@@ -18,36 +18,21 @@
  * It is available through the world-wide-web at this URL:
  * http://creativecommons.org/licenses/by-nc-nd/3.0/nl/deed.en_US
  * If you are unable to obtain it through the world-wide-web, please send an email
- * to servicedesk@tig.nl so we can send you a copy immediately.
+ * to support@tig.nl so we can send you a copy immediately.
  *
  * DISCLAIMER
  *
  * Do not edit or add to this file if you wish to upgrade this module to newer
  * versions in the future. If you wish to customize this module for your
- * needs please contact servicedesk@tig.nl for more information.
+ * needs please contact support@tig.nl for more information.
  *
  * @copyright   Copyright (c) Total Internet Group B.V. https://tig.nl/copyright
  * @license     http://creativecommons.org/licenses/by-nc-nd/3.0/nl/deed.en_US
  */
-namespace TIG\Routigo\Config\Source\General;
+namespace TIG\Routigo\Webservices\Endpoints;
 
-use Magento\Framework\Option\ArrayInterface;
-
-class Mode implements ArrayInterface
+class UploadStops extends AbstractEndpoint
 {
-    /**
-     * Return mode option array
-     * @return array
-     */
-    public function toOptionArray()
-    {
-        // @codingStandardsIgnoreStart
-        $options = [
-            ['value' => '1', 'label' => __('Live')],
-            ['value' => '2', 'label' => __('Test')],
-            ['value' => '0', 'label' => __('Off')],
-        ];
-        // @codingStandardsIgnoreEnd
-        return $options;
-    }
+    const ENDPOINT_URL = 'upload';
+    const METHOD       = 'PUT';
 }

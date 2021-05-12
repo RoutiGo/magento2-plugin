@@ -37,6 +37,10 @@
             <configuration>
                 <mode>0</mode>
             </configuration>
+
+            <endpoints>
+                <api_base_url>https://api.routigo.com/api/</api_base_url>
+            </endpoints>
         </tig_routigo>
     </default>
 </config>

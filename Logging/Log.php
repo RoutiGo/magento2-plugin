@@ -18,7 +18,7 @@
  * It is available through the world-wide-web at this URL:
  * http://creativecommons.org/licenses/by-nc-nd/3.0/nl/deed.en_US
  * If you are unable to obtain it through the world-wide-web, please send an email
- * to servicedesk@tig.nl so we can send you a copy immediately.
+ * to servicedesk@totalinternetgroup.nl so we can send you a copy immediately.
  *
  * DISCLAIMER
  *
@@ -29,25 +29,12 @@
  * @copyright   Copyright (c) Total Internet Group B.V. https://tig.nl/copyright
  * @license     http://creativecommons.org/licenses/by-nc-nd/3.0/nl/deed.en_US
  */
-namespace TIG\Routigo\Config\Source\General;
+namespace TIG\Routigo\Logging;
 
-use Magento\Framework\Option\ArrayInterface;
+use Monolog\Logger;
 
-class Mode implements ArrayInterface
+//@codingStandardsIgnoreFile
+// RoutiGo logger
+class Log extends Logger
 {
-    /**
-     * Return mode option array
-     * @return array
-     */
-    public function toOptionArray()
-    {
-        // @codingStandardsIgnoreStart
-        $options = [
-            ['value' => '1', 'label' => __('Live')],
-            ['value' => '2', 'label' => __('Test')],
-            ['value' => '0', 'label' => __('Off')],
-        ];
-        // @codingStandardsIgnoreEnd
-        return $options;
-    }
 }
