@@ -1,43 +1,43 @@
 <?php
-/** @var \TIG\Routigo\Block\Adminhtml\Config\Support\Tab $this */
+/** @var \TIG\Routigo\Block\Adminhtml\Config\Support\Tab $block */
 ?>
 <div id="supporttab" class="tig-routigo-supporttab" data-mage-init='{"routigoConfig": true}'>
     <div class="colset-2">
         <div class="col-1 legend-version">
             <div class="version-compatibility">
-                <h3><?php echo $block->escapeHtml(__('Magento version compatibility')); ?></h3>
+                <h3><?= $block->escapeHtml(__('Magento version compatibility')); ?></h3>
                 <ul>
                     <li>
                     <span class="text">
-                        <?php echo $block->escapeHtml(__('Supported Magento versions')); ?>:
+                        <?= $block->escapeHtml(__('Supported Magento versions')); ?>:
                     </span>
-                        <span class="version"><?php echo $block->escapeHtml($this->getSupportedMagentoVersions()); ?></span>
+                        <span class="version"><?= $block->escapeHtml($block->getSupportedMagentoVersions()); ?></span>
                     </li>
                     <li>
-                        <span class="text"><?php echo $block->escapeHtml(__('Routigo version')); ?>:</span>
-                        <span class="version"><?php echo $block->escapeHtml($this->getVersionNumber()); ?></span>
+                        <span class="text"><?= $block->escapeHtml(__('Routigo version')); ?>:</span>
+                        <span class="version"><?= $block->escapeHtml($block->getVersionNumber()); ?></span>
                     </li>
-                    <span class="text"><?php echo $block->escapeHtml(__('Your PHP version')); ?>:</span>
+                    <span class="text"><?= $block->escapeHtml(__('Your PHP version')); ?>:</span>
                     <span class="version">
-                        <a href="http://devdocs.magento.com/guides/v<?php echo $this->getMagentoVersionTidyString(); ?>/install-gde/system-requirements-tech.html" target="_blank">
-                            <?php echo $block->escapeHtml(implode('.', $this->getPhpVersionArray())); ?>
+                        <a href="https://devdocs.magento.com/guides/v<?= $block->escapeHtml($block->getMagentoVersionTidyString()); //phpcs:ignore?>/install-gde/system-requirements-tech.html" target="_blank">
+                            <?= $block->escapeHtml($block->getPhpVersionArray()['full_version']); ?>
                         </a>
                                 &nbsp;
                         <?php
-                        switch ($this->phpVersionCheck()) {
+                        switch ($block->phpVersionCheck()) {
                             case 1:
                                 ?>
-                                <img class="compatible-image" height="16" src="<?= $this->getViewFileUrl('TIG_Routigo::images/green-ok.png'); ?>" alt="">
+                                <img class="compatible-image" height="16" src="<?= $block->getViewFileUrl('TIG_Routigo::images/green-ok.png'); //phpcs:ignore?>" alt="">
                                 <?php
                                 break;
                             case 0:
                                 ?>
-                                <img class="compatible-image" height="16" src="<?= $this->getViewFileUrl('TIG_Routigo::images/red-nok.png'); ?>" alt="">
+                                <img class="compatible-image" height="16" src="<?= $block->getViewFileUrl('TIG_Routigo::images/red-nok.png'); //phpcs:ignore?>" alt="">
                                 <?php
                                 break;
                             default:
                                 ?>
-                                <img class="compatible-image" height="16" src="<?= $this->getViewFileUrl('TIG_Routigo::images/orange-unknown.png'); ?>" alt="">
+                                <img class="compatible-image" height="16" src="<?= $block->getViewFileUrl('TIG_Routigo::images/orange-unknown.png'); //phpcs:ignore?>" alt="">
                                 <?php
                                 break;
                         }
@@ -50,14 +50,14 @@
 
     <div id="section">
         <div class="collapse-title" data-role="title">
-            <h3 data-role="trigger"><?php echo $block->escapeHtml(__('Support')); ?></h3>
+            <h3 data-role="trigger"><?= $block->escapeHtml(__('Support')); ?></h3>
         </div>
         <div class="collapse-content support-routigo-tig" data-role="content" style="display:none;">
-            <?php echo __('This extension is developed by <a href="https://tig.nl" target="_BLANK">TIG</a>'); ?>
+            <?= __('This extension is developed by <a href="https://tig.nl" target="_BLANK">TIG</a>'); //phpcs:ignore?>
             <div class="colset-2">
                 <div class="col-1">
-                    <h4><?php echo __('Extension basic configuration and account information'); ?></h4>
-                    <?php echo __('Please contact:'); ?>
+                    <h4><?= __('Extension basic configuration and account information'); //phpcs:ignore?></h4>
+                    <?= __('Please contact:');  //phpcs:ignore?>
                     <a href="mailto:info@routigo.com">info@routigo.com</a>
                 </div>
             </div>

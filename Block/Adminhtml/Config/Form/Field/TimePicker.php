@@ -1,4 +1,5 @@
 <?php
+
 /**
  *
  *          ..::..
@@ -18,7 +19,7 @@
  * It is available through the world-wide-web at this URL:
  * http://creativecommons.org/licenses/by-nc-nd/3.0/nl/deed.en_US
  * If you are unable to obtain it through the world-wide-web, please send an email
- * to servicedesk@tig.nl so we can send you a copy immediately.
+ * to servicedesk@totalinternetgroup.nl so we can send you a copy immediately.
  *
  * DISCLAIMER
  *
@@ -30,21 +31,21 @@
  * @license     http://creativecommons.org/licenses/by-nc-nd/3.0/nl/deed.en_US
  */
 
-namespace TIG\Routigo\Block\Adminhtml\Config\Support;
+namespace TIG\Routigo\Block\Adminhtml\Config\Form\Field;
 
-use Magento\Backend\Block\Template;
-use Magento\Framework\View\Element\BlockInterface;
+use Magento\Framework\View\Element\Template;
 
-class BodyClass extends Template implements BlockInterface
+class TimePicker extends Template
 {
+    protected $_template = 'TIG_Routigo::config/form/field/timePicker.phtml';
+
     /**
-     * @return \Magento\Backend\Block\Template
+     * @param $value
+     *
+     * @return mixed
      */
-    protected function _prepareLayout()
+    public function setInputName($value)
     {
-        if ($this->_request->getParam('section') == 'tig_routigo') {
-            $this->pageConfig->addBodyClass('routigo-config-page');
-        }
-        return parent::_prepareLayout();
+        return $this->setName($value);
     }
 }

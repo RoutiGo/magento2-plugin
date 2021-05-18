@@ -57,6 +57,9 @@
                 <label>Handling Fee</label>
                 <validate>validate-number validate-zero-or-greater</validate>
             </field>
+
+            <include path="TIG_Routigo::system/timeframes.xml" />
+
             <field id="sallowspecific" translate="label" type="select" sortOrder="70" showInDefault="1" showInWebsite="1" showInStore="1">
                 <label>Ship to Applicable Countries</label>
                 <frontend_class>shipping-applicable-country</frontend_class>

@@ -18,7 +18,7 @@
  * It is available through the world-wide-web at this URL:
  * http://creativecommons.org/licenses/by-nc-nd/3.0/nl/deed.en_US
  * If you are unable to obtain it through the world-wide-web, please send an email
- * to servicedesk@tig.nl so we can send you a copy immediately.
+ * to servicedesk@totalinternetgroup.nl so we can send you a copy immediately.
  *
  * DISCLAIMER
  *
@@ -30,21 +30,34 @@
  * @license     http://creativecommons.org/licenses/by-nc-nd/3.0/nl/deed.en_US
  */
 
-namespace TIG\Routigo\Block\Adminhtml\Config\Support;
+$column = $this->getColumn();
 
-use Magento\Backend\Block\Template;
-use Magento\Framework\View\Element\BlockInterface;
+?>
 
-class BodyClass extends Template implements BlockInterface
-{
-    /**
-     * @return \Magento\Backend\Block\Template
-     */
-    protected function _prepareLayout()
-    {
-        if ($this->_request->getParam('section') == 'tig_routigo') {
-            $this->pageConfig->addBodyClass('routigo-config-page');
-        }
-        return parent::_prepareLayout();
-    }
-}
+<input type="text"
+       id="<%- _id %>_<?=$this->getColumnName();?>"
+       name="<?=$this->getName();?>"
+       value="<%- <?=$this->getColumnName();?> %>"
+       class="<?=$column['class']?>"
+       style="<?=$column['style']?>"/>
+<script>
+    require([
+        'jquery',
+        'jquery-ui-modules/timepicker',
+    ], function ($, $t) {
+        $('.routigo__starttimepicker').timepicker({
+            timeOnlyTitle: '',
+            stepMinute: 15,
+            controlType: 'select',
+            defaultValue: '08:00',
+            showTime: false
+        });
+        $('.routigo__endtimepicker').timepicker({
+            timeOnlyTitle: '',
+            stepMinute: 15,
+            controlType: 'select',
+            defaultValue: '17:30',
+            showTime: false
+        });
+    })
+</script>
