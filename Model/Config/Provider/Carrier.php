@@ -1,5 +1,4 @@
-<?xml version="1.0"?>
-<!--
+<?php
 /**
  *
  *          ..::..
@@ -19,7 +18,7 @@
  * It is available through the world-wide-web at this URL:
  * http://creativecommons.org/licenses/by-nc-nd/3.0/nl/deed.en_US
  * If you are unable to obtain it through the world-wide-web, please send an email
- * to servicedesk@tig.nl so we can send you a copy immediately.
+ * to servicedesk@totalinternetgroup.nl so we can send you a copy immediately.
  *
  * DISCLAIMER
  *
@@ -30,14 +29,35 @@
  * @copyright   Copyright (c) Total Internet Group B.V. https://tig.nl/copyright
  * @license     http://creativecommons.org/licenses/by-nc-nd/3.0/nl/deed.en_US
  */
--->
-<config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="urn:magento:framework:Module/etc/module.xsd">
-    <module name="TIG_Routigo" setup_version="1.0.0">
-        <sequence>
-            <module name="Magento_Backend" />
-            <module name="Magento_Checkout" />
-            <module name="Magento_Store" />
-            <module name="Magento_Ui" />
-        </sequence>
-    </module>
-</config>
+
+namespace TIG\Routigo\Model\Config\Provider;
+
+// @codingStandardsIgnoreFile
+class Carrier extends AbstractConfigProvider
+{
+
+    const XPATH_CARRIER_DELIVERYDAYS       = 'tig_routigo/routigo_settings/shipment_days';
+    const XPATH_CARRIER_TIMEFRAMES         = 'carriers/tig_routigo/timeframes/allowed_timeframes';
+    const XPATH_CARRIER_TIMEFRAMES_ENABLED = 'carriers/tig_routigo/timeframes/timeframes_active';
+
+
+    /**
+     * @return bool
+     */
+    public function getDeliveryDays()
+    {
+        return $this->getConfigValue(self::XPATH_CARRIER_DELIVERYDAYS);
+    }
+
+    public function getTimeframes()
+    {
+        return $this->getConfigValue(self::XPATH_CARRIER_TIMEFRAMES);
+    }
+
+    public function isTimeFramesEnabled()
+    {
+        return $this->getConfigValue(self::XPATH_CARRIER_TIMEFRAMES_ENABLED);
+
+    }
+
+}

@@ -41,13 +41,13 @@ class DaysOfWeek implements OptionSourceInterface
     public function toOptionArray()
     {
         return [
-            ['value' => 1, 'label' => __('Monday')],
-            ['value' => 2, 'label' => __('Tuesday')],
-            ['value' => 3, 'label' => __('Wednesday')],
-            ['value' => 4, 'label' => __('Thursday')],
-            ['value' => 5, 'label' => __('Friday')],
-            ['value' => 6, 'label' => __('Saturday')],
-            ['value' => 0, 'label' => __('Sunday')],
+            ['value' => 'monday', 'label' => __('Monday')],
+            ['value' => 'tuesday', 'label' => __('Tuesday')],
+            ['value' => 'wednesday', 'label' => __('Wednesday')],
+            ['value' => 'thursday', 'label' => __('Thursday')],
+            ['value' => 'friday', 'label' => __('Friday')],
+            ['value' => 'saturday', 'label' => __('Saturday')],
+            ['value' => 'sunday', 'label' => __('Sunday')],
         ];
     }
 }

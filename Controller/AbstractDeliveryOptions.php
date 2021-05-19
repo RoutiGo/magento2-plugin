@@ -1,5 +1,4 @@
-<?xml version="1.0"?>
-<!--
+<?php
 /**
  *
  *          ..::..
@@ -30,14 +29,41 @@
  * @copyright   Copyright (c) Total Internet Group B.V. https://tig.nl/copyright
  * @license     http://creativecommons.org/licenses/by-nc-nd/3.0/nl/deed.en_US
  */
--->
-<config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="urn:magento:framework:Module/etc/module.xsd">
-    <module name="TIG_Routigo" setup_version="1.0.0">
-        <sequence>
-            <module name="Magento_Backend" />
-            <module name="Magento_Checkout" />
-            <module name="Magento_Store" />
-            <module name="Magento_Ui" />
-        </sequence>
-    </module>
-</config>
+
+namespace TIG\Routigo\Controller;
+
+use Magento\Framework\App\Action\Context;
+use Magento\Framework\App\Action\Action;
+
+abstract class AbstractDeliveryOptions extends Action
+{
+    /**
+     * AbstractDeliveryOptions constructor.
+     *
+     * @param Context       $context
+     */
+    public function __construct(
+        Context $context
+    ) {
+        parent::__construct($context);
+    }
+
+    /**
+     * @param string $data
+     * @param null   $code
+     *
+     * @return mixed
+     */
+    public function jsonResponse($data = '', $code = null)
+    {
+        $response = $this->getResponse();
+
+        if ($code !== null) {
+            $response->setStatusCode($code);
+        }
+
+        return $response->representJson(
+            \Zend_Json::encode($data)
+        );
+    }
+}

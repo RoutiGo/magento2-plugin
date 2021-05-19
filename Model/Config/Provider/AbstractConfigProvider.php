@@ -1,5 +1,4 @@
-<?xml version="1.0"?>
-<!--
+<?php
 /**
  *
  *          ..::..
@@ -30,14 +29,35 @@
  * @copyright   Copyright (c) Total Internet Group B.V. https://tig.nl/copyright
  * @license     http://creativecommons.org/licenses/by-nc-nd/3.0/nl/deed.en_US
  */
--->
-<config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="urn:magento:framework:Module/etc/module.xsd">
-    <module name="TIG_Routigo" setup_version="1.0.0">
-        <sequence>
-            <module name="Magento_Backend" />
-            <module name="Magento_Checkout" />
-            <module name="Magento_Store" />
-            <module name="Magento_Ui" />
-        </sequence>
-    </module>
-</config>
+
+namespace TIG\Routigo\Model\Config\Provider;
+
+use Magento\Framework\App\Config\ScopeConfigInterface as ScopeConfig;
+use Magento\Store\Model\ScopeInterface;
+
+abstract class AbstractConfigProvider
+{
+    /** @var ScopeConfig $scopeConfig */
+    private $scopeConfig;
+
+    /**
+     * AbstractConfigProvider constructor.
+     *
+     * @param ScopeConfig $scopeConfig
+     */
+    public function __construct(
+        ScopeConfig $scopeConfig
+    ) {
+        $this->scopeConfig = $scopeConfig;
+    }
+
+    /**
+     * @param $path
+     *
+     * @return mixed
+     */
+    public function getConfigValue($path)
+    {
+        return $this->scopeConfig->getValue($path, ScopeInterface::SCOPE_STORE);
+    }
+}
