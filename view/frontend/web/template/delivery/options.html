@@ -40,9 +40,9 @@
                     <div>
                         <input type="radio" name="routigo_delivery_option" class="radio"/>
                         <label data-bind="i18n: 'Between ' + timeFrame.earliest_time + ' and ' + timeFrame.latest_time"></label>
-                        <!-- ko if timeFrame.fee -->
-                        <span data-bind="text: timeFrame.fee"></span>
-                        <!-- /ko -->
+                        <div data-bind="if: timeFrame.fee">
+                            <span data-bind="text: timeFrame.fee"></span>
+                        </div>
                     </div>
                 </div>
                 <!-- /ko -->
