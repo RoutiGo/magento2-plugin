@@ -1,0 +1,189 @@
+/**
+ *
+ *          ..::..
+ *     ..::::::::::::..
+ *   ::'''''':''::'''''::
+ *   ::..  ..:  :  ....::
+ *   ::::  :::  :  :   ::
+ *   ::::  :::  :  ''' ::
+ *   ::::..:::..::.....::
+ *     ''::::::::::::''
+ *          ''::''
+ *
+ *
+ * NOTICE OF LICENSE
+ *
+ * This source file is subject to the Creative Commons License.
+ * It is available through the world-wide-web at this URL:
+ * http://creativecommons.org/licenses/by-nc-nd/3.0/nl/deed.en_US
+ * If you are unable to obtain it through the world-wide-web, please send an email
+ * to servicedesk@tig.nl so we can send you a copy immediately.
+ *
+ * DISCLAIMER
+ *
+ * Do not edit or add to this file if you wish to upgrade this module to newer
+ * versions in the future. If you wish to customize this module for your
+ * needs please contact servicedesk@tig.nl for more information.
+ *
+ * @copyright   Copyright (c) Total Internet Group B.V. https://tig.nl/copyright
+ * @license     http://creativecommons.org/licenses/by-nc-nd/3.0/nl/deed.en_US
+ */
+
+/*
+ * Color variables
+ */
+
+// Labels
+@routigo__label__background: #F5FBFF;
+@routigo__label__border-color: #CFE4F2;
+@routigo__label__color: #000;
+@routigo__label__background--hover: @routigo__label__background;
+@routigo__label__border-color--hover: darken(@routigo__label__border-color, 20%);
+@routigo__label__color--hover: @routigo__label__color;
+@routigo__label__background--selected: #E1FFF0;
+@routigo__label__border-color--selected: #83E0B1;
+@routigo__label__color--selected: @routigo__label__color;
+
+// Radio buttons
+@routigo__radio__background: #FFF;
+@routigo__radio__border-color: #D4D9E3;
+@routigo__radio--selected: #247AFF;
+
+// Fees
+@routigo__fee--free: #00921A;
+
+/*
+ * Styles
+ */
+
+& when (@media-common = true) {
+    .routigo-delivery-options {
+        width: 100%;
+        font-size: 14px;
+        line-height: 23px;
+
+        &__day {
+            & + .routigo-delivery-options__day {
+                margin-top: 30px;
+            }
+
+            &__info {
+                justify-content: space-between;
+                display: flex;
+
+                &__name {
+                    margin-bottom: 6px;
+                    font-weight: 600;
+                    text-transform: capitalize;
+                }
+            }
+        }
+
+        &__time-frames {
+            grid-template-columns: 1fr;
+            grid-gap: 10px;
+            display: grid;
+        }
+
+        &__single-time-frame {
+            position: relative;
+        }
+
+        &__radio[type="radio"] {
+            position: absolute;
+            z-index: 1;
+            top: 50%;
+            left: 15px;
+            transform: translateY(-50%);
+            align-items: center;
+            justify-content: center;
+            flex-direction: row;
+            display: flex;
+            appearance: none;
+            margin: 0;
+            border: 1px solid @routigo__radio__border-color;
+            border-radius: 50%;
+            width: 20px;
+            height: 20px;
+            background: @routigo__radio__background;
+            pointer-events: none;
+
+            &:before {
+                content: '';
+                transition: .2s all ease-in-out;
+                will-change: width, height;
+                backface-visibility: hidden;
+                border-radius: inherit;
+                width: 0;
+                height: 0;
+                background: @routigo__radio--selected;
+            }
+
+            &:checked {
+                &:not([disabled]) {
+                    box-shadow: none;
+                }
+
+                &:focus-visible {
+                    outline: 0;
+                }
+
+                &:before {
+                    width: 12px;
+                    height: 12px;
+                }
+
+                &+label {
+                    border-color: @routigo__label__border-color--selected;
+                    background: @routigo__label__background--selected;
+                    color: @routigo__label__color--selected;
+                }
+            }
+        }
+
+        &__label {
+            position: relative;
+            flex-direction: row;
+            align-items: center;
+            justify-content: flex-start;
+            display: flex;
+            border: 1px solid @routigo__label__border-color;
+            border-radius: 3px;
+            padding: 20px 0 20px 50px;
+            background: @routigo__label__background;
+            cursor: pointer;
+            color: @routigo__label__color;
+
+            &:hover {
+                border-color: @routigo__label__border-color--hover;
+                background: @routigo__label__background--hover;
+                color: @routigo__label__color--hover;
+            }
+        }
+
+        &__fees {
+            margin-right: 15px;
+            margin-left: auto;
+
+            &__single {
+                &:before {
+                    content: '+ ';
+                }
+
+                &--free {
+                    color: @routigo__fee--free;
+
+                    &:before {
+                        content: none;
+                    }
+                }
+            }
+        }
+    }
+}
+
+.media-width(@extremum, @break) when (@extremum = 'min') and (@break = @screen__m) {
+    .routigo-delivery-options {
+        max-width: 500px;
+    }
+}
