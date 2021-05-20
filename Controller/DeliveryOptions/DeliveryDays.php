@@ -89,7 +89,8 @@ class DeliveryDays extends AbstractDeliveryOptions
                 if ($timeFrame->timeframe_day == $deliveryDay['day']) {
                     $deliveryDay['timeFrames'][$timeFrame->timeframe_sort_order] = [
                         'earliest_time' => $timeFrame->timeframe_earliest_time,
-                        'latest_time' => $timeFrame->timeframe_latest_time
+                        'latest_time' => $timeFrame->timeframe_latest_time,
+                        'fee' => $timeFrame->timeframe_fee
                     ];
                 }
             }
