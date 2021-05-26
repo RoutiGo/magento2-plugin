@@ -45,6 +45,7 @@ class DeliveryDays extends AbstractDeliveryOptions
 
     /** @var LocaleResolver $scopeConfig */
     private $localeResolver;
+
     /**
      * @var Carrier
      */
@@ -71,7 +72,26 @@ class DeliveryDays extends AbstractDeliveryOptions
         parent::__construct($context);
     }
 
+    /**
+     * @return \Magento\Framework\App\ResponseInterface|\Magento\Framework\Controller\ResultInterface|mixed
+     * @throws \Exception
+     */
     public function execute()
+    {
+        $deliveryDays = $this->getDeliveryDays();
+        $timeFrames   = $this->getTimeFrames();
+        $deliveryDays = $this->addTimeFrames($deliveryDays, $timeFrames);
+        $deliveryDays = $this->sortDeliveryDays($deliveryDays);
+        $deliveryDays = $this->addDeliveryDate($deliveryDays);
+        $deliveryDays = $this->removeEmptyDays($deliveryDays);
+
+        return $this->jsonResponse($deliveryDays);
+    }
+
+    /**
+     * @return array|bool
+     */
+    public function getDeliveryDays()
     {
         $deliveryDays = $this->carrier->getDeliveryDays();
         $deliveryDays = explode(',', $deliveryDays);
@@ -81,9 +101,26 @@ class DeliveryDays extends AbstractDeliveryOptions
             );
         }, $deliveryDays);
 
-        $timeFrames = $this->carrier->getTimeframes();
-        $timeFrames = json_decode($timeFrames);
+        return $deliveryDays;
+    }
 
+    /**
+     * @return mixed
+     */
+    public function getTimeFrames()
+    {
+        $timeFrames = $this->carrier->getTimeframes();
+        return json_decode($timeFrames);
+    }
+
+    /**
+     * @param $deliveryDays
+     * @param $timeFrames
+     *
+     * @return mixed
+     */
+    public function addTimeFrames($deliveryDays, $timeFrames)
+    {
         foreach($deliveryDays as &$deliveryDay) {
             foreach ($timeFrames as $key => $timeFrame) {
                 if ($timeFrame->timeframe_day == $deliveryDay['day']) {
@@ -92,6 +129,7 @@ class DeliveryDays extends AbstractDeliveryOptions
                         'latest_time' => $timeFrame->timeframe_latest_time,
                         'fee' => $timeFrame->timeframe_fee
                     ];
+                    continue;
                 }
             }
         }
@@ -103,6 +141,76 @@ class DeliveryDays extends AbstractDeliveryOptions
             }
         }
 
-        return $this->jsonResponse($deliveryDays);
+        return $deliveryDays;
+    }
+
+    /**
+     * @param $deliveryDays
+     *
+     * @return array
+     * @throws \Exception
+     */
+    public function sortDeliveryDays($deliveryDays)
+    {
+        $firstDeliveryDay = new \DateTime('tomorrow');
+        $firstDeliveryDay = $firstDeliveryDay->format('l');
+        $firstDeliveryDay = strtolower($firstDeliveryDay);
+
+        foreach($deliveryDays as $key => $val) {
+            if ($val['day'] === $firstDeliveryDay) {
+                $firstDeliveryDay = $key;
+            }
+        }
+
+        if ($firstDeliveryDay !== 0) {
+            $firstDays = array_slice($deliveryDays, $firstDeliveryDay);
+            $lastDays = array_slice($deliveryDays, 0, $firstDeliveryDay);
+            $deliveryDays = array_merge($firstDays, $lastDays);
+        }
+
+        return $deliveryDays;
+    }
+
+    /**
+     * @param $deliveryDays
+     *
+     * @return mixed
+     * @throws \Exception
+     */
+    public function addDeliveryDate($deliveryDays)
+    {
+        $count = 1;
+
+        foreach($deliveryDays as &$day) {
+            setlocale(LC_ALL, $this->localeResolver->getLocale());
+            $date = new \DateTime('today');
+            $date->modify('+' . strval($count) . ' day');
+            $date = $date->format('j M Y');
+            $day['deliveryDate'] = strftime('%d %b %Y', strtotime($date));
+
+            $dateValue = new \DateTime('today');
+            $dateValue->modify('+' . strval($count) . ' day');
+            $dateValue = $dateValue->format('Y-m-d');
+            $day['deliveryDateValue'] = $dateValue;
+            $count++;
+        }
+
+        return $deliveryDays;
+    }
+
+    /**
+     * @param $deliveryDays
+     *
+     * @return array
+     */
+    public function removeEmptyDays($deliveryDays)
+    {
+        foreach ($deliveryDays as $key => &$deliveryDay) {
+            if (!isset($deliveryDay['timeFrames'])) {
+                unset($deliveryDays[$key]);
+            }
+        }
+
+        return  array_values($deliveryDays);
     }
 }
