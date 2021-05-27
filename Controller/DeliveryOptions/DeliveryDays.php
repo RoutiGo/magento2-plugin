@@ -179,20 +179,25 @@ class DeliveryDays extends AbstractDeliveryOptions
      */
     public function addDeliveryDate($deliveryDays)
     {
-        $count = 1;
+        $dateCount = 1;
 
         foreach($deliveryDays as &$day) {
             setlocale(LC_ALL, $this->localeResolver->getLocale());
             $date = new \DateTime('today');
-            $date->modify('+' . strval($count) . ' day');
+            $date->modify('+' . strval($dateCount) . ' day');
             $date = $date->format('j M Y');
             $day['deliveryDate'] = strftime('%d %b %Y', strtotime($date));
 
-            $dateValue = new \DateTime('today');
-            $dateValue->modify('+' . strval($count) . ' day');
-            $dateValue = $dateValue->format('Y-m-d');
-            $day['deliveryDateValue'] = $dateValue;
-            $count++;
+            if (isset($day['timeFrames'])){
+                foreach ($day['timeFrames'] as &$timeFrame) {
+                    $dateValue = new \DateTime('today');
+                    $dateValue->modify('+' . strval($dateCount) . ' day');
+                    $dateValue = $dateValue->format('Y-m-d');
+                    $timeFrame['deliveryDateValue'] = $dateValue;
+                }
+            }
+
+            $dateCount++;
         }
 
         return $deliveryDays;

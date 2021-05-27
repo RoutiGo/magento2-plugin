@@ -84,13 +84,13 @@ class Routigo extends AbstractCarrier implements CarrierInterface
      */
     public function collectRates(RateRequest $request)
     {
-        if (!$this->getConfigFlag('active')) {
-            return false;
-        }
+//        if (!$this->getConfigFlag('active')) {
+//            return false;
+//        }
 
-        if  ($this->$this->getConfigFlag('specificcountry') !== 'NL') {
-            return false;
-        }
+//        if  ($this->$this->getConfigFlag('specificcountry') !== 'NL') {
+//            return false;
+//        }
 
         /** @var \Magento\Shipping\Model\Rate\Result $result */
         $result = $this->rateResultFactory->create();

@@ -88,9 +88,7 @@ define([
         initObservable: function () {
             this.selectedMethod = ko.computed(function () {
                 var method = quote.shippingMethod();
-                var selectedMethod = method != null ? method.carrier_code + '_' + method.method_code : null;
-                var price = priceUtils.formatPrice(5, quote.getPriceFormat());
-                return selectedMethod;
+                return method != null ? method.carrier_code + '_' + method.method_code : null;
             }, this);
     
             this.getDeliveryDays();
@@ -124,6 +122,16 @@ define([
                 })
             }.bind(this));
         },
+        
+        saveDeliveryDate: function (data) {
+            $.ajax({
+                method: 'POST',
+                url: '/routigo/checkout/getdeliverydate',
+                data: {deliveryDate: data.deliveryDateValue}
+            });
+            
+            return true;
+        }
     });
     
 });

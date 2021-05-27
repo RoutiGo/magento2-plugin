@@ -46,8 +46,8 @@
                 <div class="routigo-delivery-options__time-frames__container">
                     <div class="routigo-delivery-options__time-frames" data-bind="foreach: { data: deliveryDay.timeFrames, as: 'timeFrame'}">
                         <div class="routigo-delivery-options__single-time-frame">
-                            <input data-bind="attr: { value: $parent.deliveryDateValue, id: 'routigo_delivery_option--' + deliveryDay.day + '_' + $index() }" type="radio" name="routigo_delivery_option" class="radio routigo-delivery-options__radio"/>
-                            <label data-bind="attr: { for: 'routigo_delivery_option--' + deliveryDay.day + '_' + $index() }" class="routigo-delivery-options__label">
+                            <input data-bind="attr: { id: 'routigo_delivery_option--' + deliveryDay.day + '_' + $index() }" type="radio" name="routigo_delivery_option" class="radio routigo-delivery-options__radio"/>
+                            <label data-bind="attr: { value: timeFrame.deliveryDateValue, for: 'routigo_delivery_option--' + deliveryDay.day + '_' + $index() }, click: $parentContext.$parent.saveDeliveryDate" class="routigo-delivery-options__label">
                                 <div data-bind="i18n: 'Between ' + timeFrame.earliest_time + ' and ' + timeFrame.latest_time"></div>
                                 <div class="routigo-delivery-options__fees">
                                     <!-- ko if: timeFrame.fee-->
