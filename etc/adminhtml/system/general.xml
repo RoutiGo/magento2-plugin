@@ -41,5 +41,10 @@
             <source_model>TIG\Routigo\Config\Source\General\Mode</source_model>
             <config_path>tig_routigo/general/mode</config_path>
         </field>
+        <field id="api_key" translate="label comment" type="obscure" sortOrder="20" showInDefault="1" showInWebsite="1" showInStore="1">
+            <label>Api Key</label>
+            <backend_model>Magento\Config\Model\Config\Backend\Encrypted</backend_model>
+            <config_path>tig_routigo/generalconfiguration_extension_status/api_key</config_path>
+        </field>
     </group>
 </include>

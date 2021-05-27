@@ -2,7 +2,6 @@
 <!--
 **
  *
- *
  *          ..::..
  *     ..::::::::::::..
  *   ::'''''':''::'''''::
@@ -32,16 +31,18 @@
  * @license     http://creativecommons.org/licenses/by-nc-nd/3.0/nl/deed.en_US
  *
 -->
-<config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="urn:magento:framework:ObjectManager/etc/config.xsd">
-    <type name="Magento\Sales\Api\OrderRepositoryInterface">
-        <plugin name="save_delivery_date" type="TIG\Routigo\Plugin\OrderSave"/>
-    <type name="TIG\Routigo\Logging\Log">
-        <arguments>
-            <argument name="name" xsi:type="string">routigo_logging</argument>
-            <argument name="handlers" xsi:type="array">
-                <item name="exception" xsi:type="object">TIG\Routigo\Logging\CriticalHandler</item>
-                <item name="debug" xsi:type="object">TIG\Routigo\Logging\DebugHandler</item>
-            </argument>
-        </arguments>
-    </type>
-</config>
+<listing xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="urn:magento:module:Magento_Ui:etc/ui_configuration.xsd">
+    <listingToolbar name="listing_top">
+        <massaction name="listing_massaction">
+            <action name="routigo_plan_orders">
+                <argument name="data" xsi:type="array">
+                    <item name="config" xsi:type="array">
+                        <item name="type" xsi:type="string">routigo_plan_orders</item>
+                        <item name="label" xsi:type="string" translate="true">Routigo - Plan Orders</item>
+                        <item name="url" xsi:type="url" path="routigo/order/planOrders"/>
+                    </item>
+                </argument>
+            </action>
+        </massaction>
+    </listingToolbar>
+</listing>

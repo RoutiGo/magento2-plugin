@@ -1,7 +1,5 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<!--
-**
- *
+<?php
+/**
  *
  *          ..::..
  *     ..::::::::::::..
@@ -20,7 +18,7 @@
  * It is available through the world-wide-web at this URL:
  * http://creativecommons.org/licenses/by-nc-nd/3.0/nl/deed.en_US
  * If you are unable to obtain it through the world-wide-web, please send an email
- * to servicedesk@totalinternetgroup.nl so we can send you a copy immediately.
+ * to servicedesk@tig.nl so we can send you a copy immediately.
  *
  * DISCLAIMER
  *
@@ -30,18 +28,37 @@
  *
  * @copyright   Copyright (c) Total Internet Group B.V. https://tig.nl/copyright
  * @license     http://creativecommons.org/licenses/by-nc-nd/3.0/nl/deed.en_US
- *
--->
-<config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="urn:magento:framework:ObjectManager/etc/config.xsd">
-    <type name="Magento\Sales\Api\OrderRepositoryInterface">
-        <plugin name="save_delivery_date" type="TIG\Routigo\Plugin\OrderSave"/>
-    <type name="TIG\Routigo\Logging\Log">
-        <arguments>
-            <argument name="name" xsi:type="string">routigo_logging</argument>
-            <argument name="handlers" xsi:type="array">
-                <item name="exception" xsi:type="object">TIG\Routigo\Logging\CriticalHandler</item>
-                <item name="debug" xsi:type="object">TIG\Routigo\Logging\DebugHandler</item>
-            </argument>
-        </arguments>
-    </type>
-</config>
+ */
+
+namespace TIG\Routigo\Model;
+
+use Magento\Framework\App\Config\ScopeConfigInterface as ScopeConfig;
+use Magento\Store\Model\ScopeInterface;
+
+abstract class AbstractConfigProvider
+{
+    /** @var ScopeConfig ScopeConfig */
+    private $scopeConfig;
+
+    /**
+     * Config constructor.
+     *
+     * @param ScopeConfig $scopeConfig
+     */
+    public function __construct(
+        ScopeConfig $scopeConfig
+    ) {
+        $this->scopeConfig = $scopeConfig;
+    }
+
+    /**
+     * @param $path
+     * @param $store
+     *
+     * @return mixed
+     */
+    public function getConfigValue($path, $store = null)
+    {
+        return $this->scopeConfig->getValue($path, ScopeInterface::SCOPE_STORE, $store);
+    }
+}
