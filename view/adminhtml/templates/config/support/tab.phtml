@@ -1,5 +1,5 @@
 <?php
-/** @var \TIG\Routigo\Block\Adminhtml\Config\Support\Tab $block */
+/** @var \TIG\RoutiGo\Block\Adminhtml\Config\Support\Tab $block */
 ?>
 <div id="supporttab" class="tig-routigo-supporttab" data-mage-init='{"routigoConfig": true}'>
     <div class="colset-2">
@@ -14,7 +14,7 @@
                         <span class="version"><?= $block->escapeHtml($block->getSupportedMagentoVersions()); ?></span>
                     </li>
                     <li>
-                        <span class="text"><?= $block->escapeHtml(__('Routigo version')); ?>:</span>
+                        <span class="text"><?= $block->escapeHtml(__('RoutiGo version')); ?>:</span>
                         <span class="version"><?= $block->escapeHtml($block->getVersionNumber()); ?></span>
                     </li>
                     <span class="text"><?= $block->escapeHtml(__('Your PHP version')); ?>:</span>
@@ -27,17 +27,17 @@
                         switch ($block->phpVersionCheck()) {
                             case 1:
                                 ?>
-                                <img class="compatible-image" height="16" src="<?= $block->getViewFileUrl('TIG_Routigo::images/green-ok.png'); //phpcs:ignore?>" alt="">
+                                <img class="compatible-image" height="16" src="<?= $block->getViewFileUrl('TIG_RoutiGo::images/green-ok.png'); //phpcs:ignore?>" alt="">
                                 <?php
                                 break;
                             case 0:
                                 ?>
-                                <img class="compatible-image" height="16" src="<?= $block->getViewFileUrl('TIG_Routigo::images/red-nok.png'); //phpcs:ignore?>" alt="">
+                                <img class="compatible-image" height="16" src="<?= $block->getViewFileUrl('TIG_RoutiGo::images/red-nok.png'); //phpcs:ignore?>" alt="">
                                 <?php
                                 break;
                             default:
                                 ?>
-                                <img class="compatible-image" height="16" src="<?= $block->getViewFileUrl('TIG_Routigo::images/orange-unknown.png'); //phpcs:ignore?>" alt="">
+                                <img class="compatible-image" height="16" src="<?= $block->getViewFileUrl('TIG_RoutiGo::images/orange-unknown.png'); //phpcs:ignore?>" alt="">
                                 <?php
                                 break;
                         }

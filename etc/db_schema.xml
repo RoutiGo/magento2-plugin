@@ -8,9 +8,21 @@
 <schema xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
         xsi:noNamespaceSchemaLocation="urn:magento:framework:Setup/Declaration/Schema/etc/schema.xsd">
     <table name="sales_order" resource="default" engine="innodb" >
-        <column xsi:type="varchar" name="routigo_delivery_date" padding="50" unsigned="true" nullable="true" comment="Routigo Delivery date"/>
+        <column xsi:type="varchar" name="routigo_delivery_date" length="100" unsigned="true" comment="Delivery date"/>
     </table>
     <table name="quote" resource="default" engine="innodb" >
-        <column xsi:type="varchar" name="routigo_delivery_date" padding="50" unsigned="true" nullable="true" comment="Routigo Delivery date"/>
+        <column xsi:type="varchar" name="routigo_delivery_date" length="100" nullable="true" comment="Delivery date"/>
+    </table>
+    <table name="quote_address" resource="default" engine="innodb">
+        <column xsi:type="varchar" name="routigo_timeframes_fee" length="100" nullable="true" comment="Timeframes Fee" />
+    </table>
+    <table name="sales_order_address" resource="default" engine="innodb" >
+        <column xsi:type="varchar" name="routigo_timeframes_fee" length="100" nullable="true" comment="Timeframes Fee"/>
+    </table>
+    <table name="quote_address" resource="default" engine="innodb">
+        <column xsi:type="varchar" name="routigo_delivery_date" length="100" nullable="true" comment="Delivery date" />
+    </table>
+    <table name="sales_order_address" resource="default" engine="innodb" >
+        <column xsi:type="varchar" name="routigo_delivery_date" length="100" nullable="true" comment="Delivery date"/>
     </table>
 </schema>

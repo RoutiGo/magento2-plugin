@@ -29,14 +29,14 @@
  * @copyright   Copyright (c) Total Internet Group B.V. https://tig.nl/copyright
  * @license     http://creativecommons.org/licenses/by-nc-nd/3.0/nl/deed.en_US
  */
-namespace TIG\Routigo\Service\Shipment;
+namespace TIG\RoutiGo\Service\Shipment;
 
 use Exception;
 use Magento\Framework\Message\ManagerInterface;
 use Magento\Sales\Api\OrderRepositoryInterface;
 use Magento\Sales\Model\Convert\Order as ConvertOrder;
 use Magento\Sales\Model\Order;
-use TIG\Routigo\Logging\Log;
+use TIG\RoutiGo\Logging\Log;
 
 class CreateShipment
 {

@@ -1,4 +1,4 @@
-<?xml version="1.0"?>
+<?xml version="1.0" encoding="UTF-8"?>
 <!--
 /**
  *
@@ -31,13 +31,11 @@
  * @license     http://creativecommons.org/licenses/by-nc-nd/3.0/nl/deed.en_US
  */
 -->
-<config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="urn:magento:framework:App/etc/routes.xsd">
-    <router id="admin">
-        <route id="routigo" frontName="routigo">
-            <module before="Magento_Backend" name="TIG_RoutiGo" />
-        </route>
-        <route id="adminhtml">
-            <module name="TIG_RoutiGo" before="Magento_Backend" />
-        </route>
-    </router>
+<config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="urn:magento:framework:Api/etc/extension_attributes.xsd">
+    <extension_attributes for="Magento\Quote\Api\Data\AddressInterface">
+        <attribute code="routigo_timeframes_fee" type="string" />
+    </extension_attributes>
+    <extension_attributes for="Magento\Quote\Api\Data\AddressInterface">
+        <attribute code="routigo_delivery_date" type="string" />
+    </extension_attributes>
 </config>

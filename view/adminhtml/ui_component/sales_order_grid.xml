@@ -38,7 +38,7 @@
                 <argument name="data" xsi:type="array">
                     <item name="config" xsi:type="array">
                         <item name="type" xsi:type="string">routigo_plan_orders</item>
-                        <item name="label" xsi:type="string" translate="true">Routigo - Plan Orders</item>
+                        <item name="label" xsi:type="string" translate="true">RoutiGo - Plan Orders</item>
                         <item name="url" xsi:type="url" path="routigo/order/planOrders"/>
                     </item>
                 </argument>

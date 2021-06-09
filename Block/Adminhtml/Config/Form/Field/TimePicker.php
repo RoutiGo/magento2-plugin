@@ -31,13 +31,13 @@
  * @license     http://creativecommons.org/licenses/by-nc-nd/3.0/nl/deed.en_US
  */
 
-namespace TIG\Routigo\Block\Adminhtml\Config\Form\Field;
+namespace TIG\RoutiGo\Block\Adminhtml\Config\Form\Field;
 
 use Magento\Framework\View\Element\Template;
 
 class TimePicker extends Template
 {
-    protected $_template = 'TIG_Routigo::config/form/field/timePicker.phtml';
+    protected $_template = 'TIG_RoutiGo::config/form/field/timePicker.phtml';
 
     /**
      * @param $value

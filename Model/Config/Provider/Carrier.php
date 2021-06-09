@@ -30,16 +30,16 @@
  * @license     http://creativecommons.org/licenses/by-nc-nd/3.0/nl/deed.en_US
  */
 
-namespace TIG\Routigo\Model\Config\Provider;
+namespace TIG\RoutiGo\Model\Config\Provider;
 
 // @codingStandardsIgnoreFile
 class Carrier extends AbstractConfigProvider
 {
 
     const XPATH_CARRIER_DELIVERYDAYS       = 'tig_routigo/routigo_settings/shipment_days';
+    const XPATH_CARRIER_CUT_OFF_TIME       = 'tig_routigo/routigo_settings/cutoff_time';
     const XPATH_CARRIER_TIMEFRAMES         = 'carriers/tig_routigo/timeframes/allowed_timeframes';
     const XPATH_CARRIER_TIMEFRAMES_ENABLED = 'carriers/tig_routigo/timeframes/timeframes_active';
-
 
     /**
      * @return bool
@@ -57,7 +57,10 @@ class Carrier extends AbstractConfigProvider
     public function isTimeFramesEnabled()
     {
         return $this->getConfigValue(self::XPATH_CARRIER_TIMEFRAMES_ENABLED);
-
     }
 
+    public function getCutOffTime()
+    {
+        return $this->getConfigValue(self::XPATH_CARRIER_CUT_OFF_TIME);
+    }
 }

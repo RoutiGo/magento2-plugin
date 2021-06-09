@@ -30,7 +30,7 @@
  * @license     http://creativecommons.org/licenses/by-nc-nd/3.0/nl/deed.en_US
  */
 
-namespace TIG\Routigo\Model\Config\Provider;
+namespace TIG\RoutiGo\Model\Config\Provider;
 
 use Magento\Framework\App\Config\ScopeConfigInterface as ScopeConfig;
 use Magento\Store\Model\ScopeInterface;

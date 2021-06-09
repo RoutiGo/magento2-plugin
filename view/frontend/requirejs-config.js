@@ -1,4 +1,3 @@
-<?php
 /**
  *
  *          ..::..
@@ -18,7 +17,7 @@
  * It is available through the world-wide-web at this URL:
  * http://creativecommons.org/licenses/by-nc-nd/3.0/nl/deed.en_US
  * If you are unable to obtain it through the world-wide-web, please send an email
- * to servicedesk@totalinternetgroup.nl so we can send you a copy immediately.
+ * to servicedesk@tig.nl so we can send you a copy immediately.
  *
  * DISCLAIMER
  *
@@ -29,40 +28,12 @@
  * @copyright   Copyright (c) Total Internet Group B.V. https://tig.nl/copyright
  * @license     http://creativecommons.org/licenses/by-nc-nd/3.0/nl/deed.en_US
  */
-namespace TIG\Routigo\Plugin;
-
-use Magento\Quote\Model\QuoteRepository;
-
-class OrderSave
-{
-    /**
-     * @var QuoteRepository
-     */
-    private $quoteRepository;
-
-    /**
-     * OrderSave constructor.
-     *
-     * @param QuoteRepository $quoteRepository
-     */
-    public function __construct(
-        QuoteRepository $quoteRepository
-    ) {
-        $this->quoteRepository = $quoteRepository;
+var config = {
+    config: {
+        mixins: {
+            'Magento_Checkout/js/view/shipping': {
+                'TIG_RoutiGo/js/view/shipping-mixin': true
+            }
+        }
     }
-
-    /**
-     * @param $subject
-     * @param $result
-     *
-     * @return array
-     * @throws \Magento\Framework\Exception\NoSuchEntityException
-     */
-    public function beforeSave($subject, $result)
-    {
-        $quote = $this->quoteRepository->get($result->getQuoteId());
-        $result->setDeliveryDate($quote->getRoutigoDeliveryDate());
-
-        return [$result];
-    }
-}
+};

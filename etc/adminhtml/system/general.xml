@@ -38,7 +38,7 @@
         <fieldset_css>tig_routigo-sub-section</fieldset_css>
         <field id="mode" translate="label" type="select" sortOrder="10" showInDefault="1" showInWebsite="1" showInStore="1">
             <label>Mode</label>
-            <source_model>TIG\Routigo\Config\Source\General\Mode</source_model>
+            <source_model>TIG\RoutiGo\Config\Source\General\Mode</source_model>
             <config_path>tig_routigo/general/mode</config_path>
         </field>
         <field id="api_key" translate="label comment" type="obscure" sortOrder="20" showInDefault="1" showInWebsite="1" showInStore="1">

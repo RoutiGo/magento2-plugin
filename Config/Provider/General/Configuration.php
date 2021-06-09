@@ -30,11 +30,11 @@
  * @license     http://creativecommons.org/licenses/by-nc-nd/3.0/nl/deed.en_US
  */
 
-namespace TIG\Routigo\Config\Provider\General;
+namespace TIG\RoutiGo\Config\Provider\General;
 
 use Magento\Framework\App\Config\ScopeConfigInterface as ScopeConfig;
 use Magento\Framework\Encryption\EncryptorInterface;
-use TIG\Routigo\Model\AbstractConfigProvider;
+use TIG\RoutiGo\Model\AbstractConfigProvider;
 
 class Configuration extends AbstractConfigProvider
 {

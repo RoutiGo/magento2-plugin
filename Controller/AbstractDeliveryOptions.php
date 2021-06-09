@@ -30,7 +30,7 @@
  * @license     http://creativecommons.org/licenses/by-nc-nd/3.0/nl/deed.en_US
  */
 
-namespace TIG\Routigo\Controller;
+namespace TIG\RoutiGo\Controller;
 
 use Magento\Framework\App\Action\Context;
 use Magento\Framework\App\Action\Action;

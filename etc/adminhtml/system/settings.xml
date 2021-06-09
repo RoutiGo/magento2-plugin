@@ -38,14 +38,14 @@
         <field id="cutoff_time" translate="label comment" type="select" sortOrder="10" showInDefault="1" showInWebsite="1" showInStore="1" canRestore="1">
             <label>Cutoff time</label>
             <comment><![CDATA[When an order is placed after this time, another day will be added to the shipping duration.]]></comment>
-            <source_model>TIG\Routigo\Config\Source\Settings\CutOffSettings</source_model>
+            <source_model>TIG\RoutiGo\Config\Source\Settings\CutOffSettings</source_model>
             <config_path>tig_routigo/routigo_settings/cutoff_time</config_path>
         </field>
 
         <field id="shipment_days" translate="label comment" type="multiselect" sortOrder="40" showInDefault="1" showInWebsite="1" showInStore="1" canRestore="1">
             <label>Shipment days</label>
             <comment><![CDATA[Select on which days of the week orders are shipped.]]></comment>
-            <source_model>TIG\Routigo\Config\Source\Settings\DaysOfWeek</source_model>
+            <source_model>TIG\RoutiGo\Config\Source\Settings\DaysOfWeek</source_model>
             <config_path>tig_routigo/routigo_settings/shipment_days</config_path>
         </field>
     </group>

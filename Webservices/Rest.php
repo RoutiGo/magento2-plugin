@@ -29,12 +29,12 @@
  * @copyright   Copyright (c) Total Internet Group B.V. https://tig.nl/copyright
  * @license     http://creativecommons.org/licenses/by-nc-nd/3.0/nl/deed.en_US
  */
-namespace TIG\Routigo\Webservices;
+namespace TIG\RoutiGo\Webservices;
 
 use Magento\Framework\HTTP\ZendClient;
-use TIG\Routigo\Model\Config\Provider\ApiConfiguration;
-use TIG\Routigo\Config\Provider\General\Configuration;
-use TIG\Routigo\Webservices\Endpoints\EndpointInterface;
+use TIG\RoutiGo\Model\Config\Provider\ApiConfiguration;
+use TIG\RoutiGo\Config\Provider\General\Configuration;
+use TIG\RoutiGo\Webservices\Endpoints\EndpointInterface;
 //@codingStandardsIgnoreFile
 class Rest
 {

@@ -29,9 +29,9 @@
  * @copyright   Copyright (c) Total Internet Group B.V. https://tig.nl/copyright
  * @license     http://creativecommons.org/licenses/by-nc-nd/3.0/nl/deed.en_US
  */
-namespace TIG\Routigo\Webservices\Endpoints;
+namespace TIG\RoutiGo\Webservices\Endpoints;
 
-use TIG\Routigo\Webservices\Rest;
+use TIG\RoutiGo\Webservices\Rest;
 
 abstract class AbstractEndpoint implements EndpointInterface
 {

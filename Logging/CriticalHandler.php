@@ -29,7 +29,7 @@
  * @copyright   Copyright (c) Total Internet Group B.V. https://tig.nl/copyright
  * @license     http://creativecommons.org/licenses/by-nc-nd/3.0/nl/deed.en_US
  */
-namespace TIG\Routigo\Logging;
+namespace TIG\RoutiGo\Logging;
 
 use Magento\Framework\Logger\Handler\Base;
 use Monolog\Logger;
@@ -40,5 +40,5 @@ class CriticalHandler extends Base
     protected $loggerType = Logger::CRITICAL;
 
     // @codingStandardsIgnoreLine
-    protected $fileName = '/var/log/Routigo/critical.log';
+    protected $fileName = '/var/log/RoutiGo/critical.log';
 }

@@ -33,16 +33,16 @@
 -->
 <config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="urn:magento:module:Magento_Config:etc/system_file.xsd">
     <system>
-        <include path="TIG_Routigo::system/carrier.xml"/>
+        <include path="TIG_RoutiGo::system/carrier.xml"/>
 
         <section id="tig_routigo" translate="label" type="text" sortOrder="410" showInDefault="1" showInWebsite="1" showInStore="1">
-            <label>Routigo</label>
+            <label>RoutiGo</label>
             <tab>sales</tab>
-            <resource>TIG_Routigo::configuration</resource>
+            <resource>TIG_RoutiGo::configuration</resource>
             <class>routigo-section</class>
-            <include path="TIG_Routigo::system/support.xml" />
-            <include path="TIG_Routigo::system/general.xml" />
-            <include path="TIG_Routigo::system/settings.xml" />
+            <include path="TIG_RoutiGo::system/support.xml" />
+            <include path="TIG_RoutiGo::system/general.xml" />
+            <include path="TIG_RoutiGo::system/settings.xml" />
         </section>
     </system>
 </config>

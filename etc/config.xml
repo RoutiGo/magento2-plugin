@@ -38,10 +38,10 @@
                 <active>1</active>
                 <sallowspecific>1</sallowspecific>
                 <specificcountry>NL</specificcountry>
-                <model>TIG\Routigo\Model\Carrier\Routigo</model>
-                <name>Routigo</name>
+                <model>TIG\RoutiGo\Model\Carrier\RoutiGo</model>
+                <name>RoutiGo</name>
                 <price>5.00</price>
-                <title>Routigo</title>
+                <title>RoutiGo</title>
                 <type>I</type>
                 <specificerrmsg>This shipping method is not available. To use this shipping method, please contact us.</specificerrmsg>
             </tig_routigo>

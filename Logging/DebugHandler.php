@@ -29,7 +29,7 @@
  * @copyright   Copyright (c) Total Internet Group B.V. https://tig.nl/copyright
  * @license     http://creativecommons.org/licenses/by-nc-nd/3.0/nl/deed.en_US
  */
-namespace TIG\Routigo\Logging;
+namespace TIG\RoutiGo\Logging;
 
 use Monolog\Logger;
 use Magento\Framework\Logger\Handler\Base;
@@ -40,5 +40,5 @@ class DebugHandler extends Base
     protected $loggerType = Logger::DEBUG;
 
     // @codingStandardsIgnoreLine
-    protected $fileName = '/var/log/Routigo/debug.log';
+    protected $fileName = '/var/log/RoutiGo/debug.log';
 }

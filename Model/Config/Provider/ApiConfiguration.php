@@ -29,11 +29,11 @@
  * @copyright   Copyright (c) Total Internet Group B.V. https://tig.nl/copyright
  * @license     http://creativecommons.org/licenses/by-nc-nd/3.0/nl/deed.en_US
  */
-namespace TIG\Routigo\Model\Config\Provider;
+namespace TIG\RoutiGo\Model\Config\Provider;
 
 use Magento\Framework\App\Config\ScopeConfigInterface as ScopeConfig;
-use TIG\Routigo\Model\AbstractConfigProvider;
-use TIG\Routigo\Config\Provider\General\Configuration;
+use TIG\RoutiGo\Model\AbstractConfigProvider;
+use TIG\RoutiGo\Config\Provider\General\Configuration;
 
 class ApiConfiguration extends AbstractConfigProvider
 {

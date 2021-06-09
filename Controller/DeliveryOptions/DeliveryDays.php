@@ -30,13 +30,13 @@
  * @license     http://creativecommons.org/licenses/by-nc-nd/3.0/nl/deed.en_US
  */
 
-namespace TIG\Routigo\Controller\DeliveryOptions;
+namespace TIG\RoutiGo\Controller\DeliveryOptions;
 
 use Magento\Checkout\Model\Session;
 use Magento\Framework\App\Action\Context;
 use Magento\Framework\Locale\ResolverInterface as LocaleResolver;
-use TIG\Routigo\Controller\AbstractDeliveryOptions;
-use TIG\Routigo\Model\Config\Provider\Carrier;
+use TIG\RoutiGo\Controller\AbstractDeliveryOptions;
+use TIG\RoutiGo\Model\Config\Provider\Carrier;
 
 class DeliveryDays extends AbstractDeliveryOptions
 {
@@ -78,12 +78,17 @@ class DeliveryDays extends AbstractDeliveryOptions
      */
     public function execute()
     {
+        if (!$this->carrier->isTimeFramesEnabled()) {
+            return false;
+        }
+
         $deliveryDays = $this->getDeliveryDays();
         $timeFrames   = $this->getTimeFrames();
         $deliveryDays = $this->addTimeFrames($deliveryDays, $timeFrames);
         $deliveryDays = $this->sortDeliveryDays($deliveryDays);
         $deliveryDays = $this->addDeliveryDate($deliveryDays);
         $deliveryDays = $this->removeEmptyDays($deliveryDays);
+        $deliveryDays = $this->checkCutOffTime($deliveryDays);
 
         return $this->jsonResponse($deliveryDays);
     }
@@ -186,7 +191,7 @@ class DeliveryDays extends AbstractDeliveryOptions
             $date = new \DateTime('today');
             $date->modify('+' . strval($dateCount) . ' day');
             $date = $date->format('j M Y');
-            $day['deliveryDate'] = strftime('%d %b %Y', strtotime($date));
+            $day['deliveryDate'] = strftime('%e %b %Y', strtotime($date));
 
             if (isset($day['timeFrames'])){
                 foreach ($day['timeFrames'] as &$timeFrame) {
@@ -217,5 +222,51 @@ class DeliveryDays extends AbstractDeliveryOptions
         }
 
         return  array_values($deliveryDays);
+    }
+
+    /**
+     * @param $deliveryDays
+     *
+     * @return mixed
+     * @throws \Exception
+     */
+    public function checkCutOffTime($deliveryDays)
+    {
+        $cuttOffTime = $this->carrier->getCutOffTime();
+        setlocale(LC_ALL, $this->localeResolver->getLocale());
+        $dateTime = new \DateTime('tomorrow');
+        $date = $dateTime->format('j M Y');
+        $firstPossibleDeliveryDay  = strftime('%e %b %Y', strtotime($date));
+
+
+        foreach($deliveryDays as $key => &$day) {
+            if ($day['deliveryDate'] === $firstPossibleDeliveryDay && date('H:i:s', strtotime('+ 2 hours')) > $cuttOffTime) {
+                $day = $this->setNewDeliveryDate($day, $dateTime);
+                unset($deliveryDays[$key]);
+                array_push($deliveryDays, $day);
+            }
+        }
+
+        return array_values($deliveryDays);
+    }
+
+    /**
+     * @param $day
+     * @param $dateTime
+     *
+     * @return mixed
+     */
+    public function setNewDeliveryDate($day, $dateTime)
+    {
+        $newDate = $dateTime->modify('+1 week');
+        $newDate = $dateTime->format('j M Y');
+        $day['deliveryDate'] = strftime('%e %b %Y', strtotime($newDate));
+
+        foreach($day['timeFrames'] as &$timeFrame) {
+            $newDeliveryDateValue = $dateTime->format('Y-m-d');
+            $timeFrame['deliveryDateValue'] = $newDeliveryDateValue;
+        }
+
+        return $day;
     }
 }

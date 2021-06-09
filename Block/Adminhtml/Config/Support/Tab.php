@@ -30,7 +30,7 @@
  * @license     http://creativecommons.org/licenses/by-nc-nd/3.0/nl/deed.en_US
  */
 
-namespace TIG\Routigo\Block\Adminhtml\Config\Support;
+namespace TIG\RoutiGo\Block\Adminhtml\Config\Support;
 
 use Magento\Framework\App\Config\ScopeConfigInterface;
 use Magento\Framework\App\ProductMetadataInterface;
@@ -40,11 +40,11 @@ use Magento\Framework\Data\Form\Element\AbstractElement;
 
 class Tab extends Template implements RendererInterface
 {
-    const MODULE_NAME       = 'TIG_Routigo';
+    const MODULE_NAME       = 'TIG_RoutiGo';
     const EXTENSION_VERSION = '1.1.0';
     const XPATH_ROUTIGO_SUPPORTED_MAGENTO_VERSION = 'tig_routigo/supported_magento_version';
 
-    protected $_template = 'TIG_Routigo::config/support/tab.phtml';
+    protected $_template = 'TIG_RoutiGo::config/support/tab.phtml';
 
     /** @var array */
     private $phpVersionSupport = [

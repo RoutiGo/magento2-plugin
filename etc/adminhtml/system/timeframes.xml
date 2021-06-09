@@ -42,11 +42,8 @@
         </field>
         <field id="allowed_timeframes" translate="label comment" sortOrder="20" showInDefault="1" showInWebsite="1" showInStore="1" canRestore="1">
             <label>Enable available timeframes</label>
-            <depends>
-                <field id="timeframes_active">1</field>
-            </depends>
             <comment><![CDATA[Configure the available timeframes visible for customers in the frontend.]]></comment>
-            <frontend_model>TIG\Routigo\Block\Adminhtml\Config\Form\Field\TimeframesArray</frontend_model>
+            <frontend_model>TIG\RoutiGo\Block\Adminhtml\Config\Form\Field\TimeframesArray</frontend_model>
             <backend_model>Magento\Config\Model\Config\Backend\Serialized\ArraySerialized</backend_model>
         </field>
     </group>

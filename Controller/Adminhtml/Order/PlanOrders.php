@@ -29,7 +29,7 @@
  * @copyright   Copyright (c) Total Internet Group B.V. https://tig.nl/copyright
  * @license     http://creativecommons.org/licenses/by-nc-nd/3.0/nl/deed.en_US
  */
-namespace TIG\Routigo\Controller\Adminhtml\Order;
+namespace TIG\RoutiGo\Controller\Adminhtml\Order;
 
 use Magento\Backend\App\Action;
 use Magento\Backend\App\Action\Context;
@@ -38,8 +38,8 @@ use Magento\Framework\App\Action\HttpPostActionInterface;
 use Magento\Sales\Model\Order;
 use Magento\Sales\Model\ResourceModel\Order\CollectionFactory as OrderCollectionFactory;
 use Magento\Ui\Component\MassAction\Filter;
-use TIG\Routigo\Service\Shipment\CreateShipment;
-use TIG\Routigo\Service\Shipment\UploadStop;
+use TIG\RoutiGo\Service\Shipment\CreateShipment;
+use TIG\RoutiGo\Service\Shipment\UploadStop;
 
 class PlanOrders extends Action implements HttpPostActionInterface
 {
@@ -108,7 +108,8 @@ class PlanOrders extends Action implements HttpPostActionInterface
             $this->createShipment->create($order);
         }
 
-        $this->uploadStop->upload($this->createShipment->getCreatedShipments());
+        $result = $this->uploadStop->upload($this->createShipment->getCreatedShipments());
+        $this->messageManager->addSuccessMessage(sprintf('Sucessfully planned orders in RoutiGo. The trackingId is %s', $result['trackingId']));
 
         return $this->_redirect('sales/order/index');
     }

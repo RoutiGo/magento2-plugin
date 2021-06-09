@@ -79,7 +79,7 @@ define([
     
     return Component.extend({
         defaults: {
-            template: 'TIG_Routigo/delivery/options',
+            template: 'TIG_RoutiGo/delivery/options',
             postcode: null,
             country: null,
             deliveryDays: ko.observableArray(),
@@ -113,6 +113,10 @@ define([
                 showLoader: true,
             }).done(function (data) {
                 this.deliveryDays(data);
+                if (!data) {
+                    return;
+                }
+                
                 data.forEach(function (day) {
                     day.timeFrames.forEach(function(timeframe) {
                         if (timeframe.fee) {
@@ -122,16 +126,6 @@ define([
                 })
             }.bind(this));
         },
-        
-        saveDeliveryDate: function (data) {
-            $.ajax({
-                method: 'POST',
-                url: '/routigo/checkout/getdeliverydate',
-                data: {deliveryDate: data.deliveryDateValue}
-            });
-            
-            return true;
-        }
     });
     
 });
