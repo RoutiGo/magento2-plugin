@@ -6,7 +6,7 @@
 var config = {
     map: {
         '*': {
-            RoutiGoConfig: 'TIG_RoutiGo/js/support'
+            routigoConfig: 'TIG_RoutiGo/js/support'
         }
     }
-}
+};
