@@ -32,12 +32,29 @@
 
 namespace TIG\RoutiGo\Plugin\Quote\Model\Quote\Address\Total;
 
-use Magento\Quote\Model\Quote;
+use Magento\Framework\Pricing\PriceCurrencyInterface;
 use Magento\Quote\Api\Data\ShippingAssignmentInterface as ShippingAssignmentApi;
+use Magento\Quote\Model\Quote;
 use Magento\Quote\Model\Quote\Address\Total as QuoteAddressTotal;
 
 class Shipping
 {
+    /**
+     * @var PriceCurrencyInterface
+     */
+    private $priceCurrency;
+
+    /**
+     * Shipping constructor.
+     *
+     * @param PriceCurrencyInterface $priceCurrency
+     */
+    public function __construct(
+        PriceCurrencyInterface $priceCurrency
+    ) {
+        $this->priceCurrency = $priceCurrency;
+    }
+
     /**
      * @param                       $subject
      * @param                       $result
@@ -58,7 +75,7 @@ class Shipping
             return $result;
         }
 
-        $timeframesFee = $this->getTimeFramesFee($address);
+        $timeframesFee = $this->getTimeFramesFee($address, $quote);
 
         if (!$timeframesFee) {
             return $result;
@@ -76,7 +93,7 @@ class Shipping
      *
      * @return mixed|null
      */
-    private function getTimeframesFee($address)
+    private function getTimeframesFee($address, $quote)
     {
         $timeFramesFee = $address->getRoutigoTimeframesFee();
 
@@ -84,10 +101,13 @@ class Shipping
             return null;
         }
 
-        $timeframesFee = substr($address->getRoutigoTimeframesFee(),5);
-        $timeframesFee = str_replace(',','.', $timeframesFee);
+        $storeCode      = $quote->getStore()->getCode();
+        $currencySymbol = $this->priceCurrency->getCurrencySymbol($storeCode);
 
-        return floatval($timeframesFee);
+        $timeFramesFee = ltrim($timeFramesFee, $currencySymbol);
+        $timeFramesFee = str_replace(',', '.', $timeFramesFee);
+
+        return floatval($timeFramesFee);
     }
 
     /**
