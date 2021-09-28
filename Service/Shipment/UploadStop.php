@@ -117,10 +117,12 @@ class UploadStop
     {
         $deliveryLocation = [];
         $shippingAddress  = $shipment->getShippingAddress();
-        $houseNumber = $this->getHouseNumber($shippingAddress);
-        $deliveryLocation['addressInformation']['houseNumber'] = $houseNumber;
+        $name             = $shippingAddress->getFirstname() . ' ' . $shippingAddress->getLastname();
+        $deliveryLocation['addressInformation']['houseNumber'] = $this->getHouseNumber($shippingAddress);
         $deliveryLocation['addressInformation']['postcode']    = $shippingAddress->getPostCode();
         $deliveryLocation['addressInformation']['countryCode'] = $shippingAddress->getCountryId();
+        $deliveryLocation['addressInformation']['name']        = $name;
+        $deliveryLocation['addressInformation']['streetName']  = $this->getStreet($shippingAddress->getStreet());
 
         return $deliveryLocation;
     }
@@ -145,6 +147,20 @@ class UploadStop
 
         //error handling
         return false;
+    }
+
+    /**
+     * @param $street
+     *
+     * @return string
+     */
+    private function getStreet($street)
+    {
+        if (!is_array($street)) {
+            return $street;
+        }
+
+        return preg_replace('/[0-9]+/', '', $street)[0];
     }
 
     /**
