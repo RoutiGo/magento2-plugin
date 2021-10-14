@@ -49,4 +49,20 @@
             <config_path>tig_routigo/routigo_settings/shipment_days</config_path>
         </field>
     </group>
+
+    <group id="timeframes" sortOrder="50" showInDefault="1" showInWebsite="1" showInStore="1">
+        <label>Timeframes</label>
+        <fieldset_css>admin__field-wide</fieldset_css>
+        <attribute type="expanded">1</attribute>
+        <field id="timeframes_active" translate="label" type="select" sortOrder="10" showInDefault="1" showInWebsite="1" showInStore="1" canRestore="1">
+            <label>Timeframes</label>
+            <source_model>Magento\Config\Model\Config\Source\Enabledisable</source_model>
+        </field>
+        <field id="allowed_timeframes" translate="label comment" sortOrder="20" showInDefault="1" showInWebsite="1" showInStore="1" canRestore="1">
+            <label>Enable available timeframes</label>
+            <comment><![CDATA[Configure the available timeframes visible for customers in the frontend.]]></comment>
+            <frontend_model>TIG\RoutiGo\Block\Adminhtml\Config\Form\Field\TimeframesArray</frontend_model>
+            <backend_model>Magento\Config\Model\Config\Backend\Serialized\ArraySerialized</backend_model>
+        </field>
+    </group>
 </include>

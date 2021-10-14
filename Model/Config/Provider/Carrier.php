@@ -38,8 +38,8 @@ class Carrier extends AbstractConfigProvider
 
     const XPATH_CARRIER_DELIVERYDAYS       = 'tig_routigo/routigo_settings/shipment_days';
     const XPATH_CARRIER_CUT_OFF_TIME       = 'tig_routigo/routigo_settings/cutoff_time';
-    const XPATH_CARRIER_TIMEFRAMES         = 'carriers/tig_routigo/timeframes/allowed_timeframes';
-    const XPATH_CARRIER_TIMEFRAMES_ENABLED = 'carriers/tig_routigo/timeframes/timeframes_active';
+    const XPATH_CARRIER_TIMEFRAMES         = 'tig_routigo/timeframes/allowed_timeframes';
+    const XPATH_CARRIER_TIMEFRAMES_ENABLED = 'tig_routigo/timeframes/timeframes_active';
 
     /**
      * @return bool
