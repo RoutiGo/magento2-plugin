@@ -97,7 +97,7 @@ class UploadStop
             $order = $shipment->getOrder();
             $quote = $this->quoteFactory->create()->loadByIdWithoutStore($order->getQuoteId());
             $shipmentData['identifier'] = $shipment->getIncrementId();
-            $shipmentData['scheduledDeliveryData'] = $this->getDeliveryDate($quote);
+            $shipmentData['scheduledDeliveryDate'] = $this->getDeliveryDate($quote);
             $shipmentData['deliveryLocation'] = $this->getDeliveryLocation($shipment);
 
             $data[] = $shipmentData;
