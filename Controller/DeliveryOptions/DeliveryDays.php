@@ -100,10 +100,10 @@ class DeliveryDays extends AbstractDeliveryOptions
     {
         $deliveryDays = $this->carrier->getDeliveryDays();
         $deliveryDays = explode(',', $deliveryDays);
-        $deliveryDays = array_map(function($key) {
-            return array(
+        $deliveryDays = array_map(function ($key) {
+            return [
                 'day' => $key
-            );
+            ];
         }, $deliveryDays);
 
         return $deliveryDays;
@@ -126,7 +126,7 @@ class DeliveryDays extends AbstractDeliveryOptions
      */
     public function addTimeFrames($deliveryDays, $timeFrames)
     {
-        foreach($deliveryDays as &$deliveryDay) {
+        foreach ($deliveryDays as &$deliveryDay) {
             foreach ($timeFrames as $key => $timeFrame) {
                 if ($timeFrame->timeframe_day == $deliveryDay['day']) {
                     $deliveryDay['timeFrames'][$timeFrame->timeframe_sort_order] = [
@@ -139,7 +139,7 @@ class DeliveryDays extends AbstractDeliveryOptions
             }
         }
 
-        foreach($deliveryDays as &$deliveryDay) {
+        foreach ($deliveryDays as &$deliveryDay) {
             if (isset($deliveryDay['timeFrames'])) {
                 ksort($deliveryDay['timeFrames'], SORT_NUMERIC);
                 $deliveryDay['timeFrames'] = array_values($deliveryDay['timeFrames']);
@@ -161,7 +161,7 @@ class DeliveryDays extends AbstractDeliveryOptions
         $firstDeliveryDay = $firstDeliveryDay->format('l');
         $firstDeliveryDay = strtolower($firstDeliveryDay);
 
-        foreach($deliveryDays as $key => $val) {
+        foreach ($deliveryDays as $key => $val) {
             if ($val['day'] === $firstDeliveryDay) {
                 $firstDeliveryDay = $key;
             }
@@ -186,14 +186,14 @@ class DeliveryDays extends AbstractDeliveryOptions
     {
         $dateCount = 1;
 
-        foreach($deliveryDays as &$day) {
+        foreach ($deliveryDays as &$day) {
             setlocale(LC_ALL, $this->localeResolver->getLocale());
             $date = new \DateTime('today');
             $date->modify('+' . strval($dateCount) . ' day');
             $date = $date->format('j M Y');
-            $day['deliveryDate'] = strftime('%e %b %Y', strtotime($date));
+            $day['deliveryDate'] = date('j M Y', strtotime($date));
 
-            if (isset($day['timeFrames'])){
+            if (isset($day['timeFrames'])) {
                 foreach ($day['timeFrames'] as &$timeFrame) {
                     $dateValue = new \DateTime('today');
                     $dateValue->modify('+' . strval($dateCount) . ' day');
@@ -236,10 +236,9 @@ class DeliveryDays extends AbstractDeliveryOptions
         setlocale(LC_ALL, $this->localeResolver->getLocale());
         $dateTime = new \DateTime('tomorrow');
         $date = $dateTime->format('j M Y');
-        $firstPossibleDeliveryDay  = strftime('%e %b %Y', strtotime($date));
+        $firstPossibleDeliveryDay  = date('j M Y', strtotime($date));
 
-
-        foreach($deliveryDays as $key => &$day) {
+        foreach ($deliveryDays as $key => &$day) {
             if ($day['deliveryDate'] === $firstPossibleDeliveryDay && date('H:i:s', strtotime('+ 2 hours')) > $cuttOffTime) {
                 $day = $this->setNewDeliveryDate($day, $dateTime);
                 unset($deliveryDays[$key]);
@@ -260,9 +259,9 @@ class DeliveryDays extends AbstractDeliveryOptions
     {
         $newDate = $dateTime->modify('+1 week');
         $newDate = $dateTime->format('j M Y');
-        $day['deliveryDate'] = strftime('%e %b %Y', strtotime($newDate));
+        $day['deliveryDate'] = date('j M Y', strtotime($newDate));
 
-        foreach($day['timeFrames'] as &$timeFrame) {
+        foreach ($day['timeFrames'] as &$timeFrame) {
             $newDeliveryDateValue = $dateTime->format('Y-m-d');
             $timeFrame['deliveryDateValue'] = $newDeliveryDateValue;
         }
