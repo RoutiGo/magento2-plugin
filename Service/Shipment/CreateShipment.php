@@ -88,12 +88,12 @@ class CreateShipment
      * @param Log                      $logger
      */
     public function __construct(
-        Order\ShipmentFactory $shipmentFactory,
+        Order\ShipmentFactory    $shipmentFactory,
         Order\ShipmentRepository $shipmentRepository,
         OrderRepositoryInterface $orderRepository,
-        ConvertOrder $convertOrder,
-        ManagerInterface $messageManager,
-        Log $logger
+        ConvertOrder             $convertOrder,
+        ManagerInterface         $messageManager,
+        Log                      $logger
     ) {
         $this->shipmentFactory    = $shipmentFactory;
         $this->shipmentRepository = $shipmentRepository;

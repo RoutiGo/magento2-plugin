@@ -37,7 +37,7 @@ use TIG\RoutiGo\Config\Provider\General\Configuration;
 
 class ApiConfiguration extends AbstractConfigProvider
 {
-    const XPATH_ENDPOINTS_API_BASE_URL = 'tig_routigo/endpoints/api_base_url';
+    const XPATH_ENDPOINTS_API_BASE_URL      = 'tig_routigo/endpoints/api_base_url';
     const XPATH_ENDPOINTS_TEST_API_BASE_URL = 'tig_routigo/endpoints/api_base_url';
 
     /** @var Configuration */
@@ -48,7 +48,7 @@ class ApiConfiguration extends AbstractConfigProvider
      * @param Configuration $configuration
      */
     public function __construct(
-        ScopeConfig $scopeConfig,
+        ScopeConfig   $scopeConfig,
         Configuration $configuration
     ) {
         parent::__construct($scopeConfig);

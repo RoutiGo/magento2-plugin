@@ -40,8 +40,8 @@ use Magento\Framework\Data\Form\Element\AbstractElement;
 
 class Tab extends Template implements RendererInterface
 {
-    const MODULE_NAME       = 'TIG_RoutiGo';
-    const EXTENSION_VERSION = '1.1.0';
+    const MODULE_NAME                             = 'TIG_RoutiGo';
+    const EXTENSION_VERSION                       = '1.1.0';
     const XPATH_ROUTIGO_SUPPORTED_MAGENTO_VERSION = 'tig_routigo/supported_magento_version';
 
     protected $_template = 'TIG_RoutiGo::config/support/tab.phtml';
@@ -69,14 +69,14 @@ class Tab extends Template implements RendererInterface
      * @param array                    $data
      */
     public function __construct(
-        Template\Context $context,
+        Template\Context         $context,
         ProductMetadataInterface $productMetadata,
-        ScopeConfigInterface $scopeConfig,
+        ScopeConfigInterface     $scopeConfig,
         array $data = []
     ) {
         parent::__construct($context, $data);
-        $this->productMetadata      = $productMetadata;
-        $this->scopeConfig = $scopeConfig;
+        $this->productMetadata = $productMetadata;
+        $this->scopeConfig     = $scopeConfig;
     }
 
     /**

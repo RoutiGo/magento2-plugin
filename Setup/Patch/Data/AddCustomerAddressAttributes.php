@@ -81,12 +81,12 @@ class AddCustomerAddressAttributes implements DataPatchInterface
      */
     public function __construct(
         ModuleDataSetupInterface $moduleDataSetup,
-        CustomerSetupFactory $customerSetupFactory,
-        SetFactory $attributeSetFactory
+        CustomerSetupFactory     $customerSetupFactory,
+        SetFactory               $attributeSetFactory
     ) {
-        $this->moduleDataSetup = $moduleDataSetup;
+        $this->moduleDataSetup      = $moduleDataSetup;
         $this->customerSetupFactory = $customerSetupFactory;
-        $this->attributeSetFactory = $attributeSetFactory;
+        $this->attributeSetFactory  = $attributeSetFactory;
     }
 
     /**
@@ -109,7 +109,7 @@ class AddCustomerAddressAttributes implements DataPatchInterface
     {
         /** @var CustomerSetup $customerSetup */
         $customerSetup = $this->customerSetupFactory->create(['setup' => $this->moduleDataSetup]);
-        $eavConfig = $customerSetup->getEavConfig();
+        $eavConfig     = $customerSetup->getEavConfig();
 
         foreach ($this->customerAttributes as $attributeCode => $data) {
             if ($customerSetup->getAttribute('customer_address', $attributeCode)) {
@@ -119,7 +119,7 @@ class AddCustomerAddressAttributes implements DataPatchInterface
             $newData = $this->getAttributeData($data['data']);
             $customerSetup->addAttribute('customer_address', $attributeCode, $newData);
 
-            $newFormData = $this->getAttributeFormData($eavConfig, $data['formdata']);
+            $newFormData  = $this->getAttributeFormData($eavConfig, $data['formdata']);
             $newAttribute = $eavConfig->getAttribute('customer_address', $attributeCode);
             $newAttribute->addData($newFormData);
             $newAttribute->save();
@@ -163,9 +163,9 @@ class AddCustomerAddressAttributes implements DataPatchInterface
     private function getAttributeFormData(EavConfig $eavConfig, $customData)
     {
         $customerEntity = $eavConfig->getEntityType('customer_address');
-        $defaultSetId = $customerEntity->getDefaultAttributeSetId();
+        $defaultSetId   = $customerEntity->getDefaultAttributeSetId();
 
-        $attributeSet = $this->attributeSetFactory->create();
+        $attributeSet   = $this->attributeSetFactory->create();
         $defaultGroupId = $attributeSet->getDefaultGroupId($defaultSetId);
 
         $defaultData = [

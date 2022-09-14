@@ -39,8 +39,7 @@ use TIG\RoutiGo\Model\AbstractConfigProvider;
 class Configuration extends AbstractConfigProvider
 {
     const ROUTIGO_GENERAL_MODE = 'tig_routigo/general/mode';
-
-    const ROUTIGO_KEY   = 'tig_routigo/generalconfiguration_extension_status/api_key';
+    const ROUTIGO_KEY          = 'tig_routigo/generalconfiguration_extension_status/api_key';
 
     /**
      * @var EncryptorInterface
@@ -54,7 +53,7 @@ class Configuration extends AbstractConfigProvider
      * @param EncryptorInterface $encryptor
      */
     public function __construct(
-        ScopeConfig $scopeConfig,
+        ScopeConfig        $scopeConfig,
         EncryptorInterface $encryptor
     ) {
         parent::__construct($scopeConfig);

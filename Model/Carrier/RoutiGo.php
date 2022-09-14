@@ -69,10 +69,10 @@ class RoutiGo extends AbstractCarrier implements CarrierInterface
      */
     public function __construct(
         ScopeConfigInterface $scopeConfig,
-        ErrorFactory $rateErrorFactory,
-        LoggerInterface $logger,
-        ResultFactory $rateResultFactory,
-        MethodFactory $rateMethodFactory,
+        ErrorFactory         $rateErrorFactory,
+        LoggerInterface      $logger,
+        ResultFactory        $rateResultFactory,
+        MethodFactory        $rateMethodFactory,
         array $data = []
     ) {
         parent::__construct($scopeConfig, $rateErrorFactory, $logger, $data);

@@ -72,14 +72,14 @@ class UploadStop
      */
     public function __construct(
         StoreManagerInterface $storeManager,
-        Information $information,
-        UploadStops $uploadStops,
-        QuoteFactory $quoteFactory
+        Information           $information,
+        UploadStops           $uploadStops,
+        QuoteFactory          $quoteFactory
     ) {
 
         $this->storeManager = $storeManager;
-        $this->information = $information;
-        $this->uploadStops = $uploadStops;
+        $this->information  = $information;
+        $this->uploadStops  = $uploadStops;
         $this->quoteFactory = $quoteFactory;
     }
 
