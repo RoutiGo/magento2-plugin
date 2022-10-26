@@ -78,13 +78,21 @@ class TimeframesArray extends AbstractFieldArray
             'label'    => __('Earliest time'),
             'style'    => 'width: 110px',
             'class'    => 'routigo__starttimepicker',
-            'renderer' => $this->getLayout()->createblock(TimePicker::class, '', ['data' => ['is_render_to_js_template']])
+            'renderer' => $this->getLayout()->createblock(
+                TimePicker::class,
+                '',
+                ['data' => ['is_render_to_js_template']]
+            )
         ]);
         $this->addColumn(self::ROUTIGO_TIMEFRAME_LATEST_TIME, [
             'label'    => __('Latest time'),
             'style'    => 'width: 110px',
             'class'    => 'routigo__endtimepicker',
-            'renderer' => $this->getLayout()->createblock(TimePicker::class, '', ['data' => ['is_render_to_js_template']])
+            'renderer' => $this->getLayout()->createblock(
+                TimePicker::class,
+                '',
+                ['data' => ['is_render_to_js_template']]
+            )
         ]);
         $this->addColumn(self::ROUTIGO_TIMEFRAME_FEE, [
             'label' => __('Fee'),

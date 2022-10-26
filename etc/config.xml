@@ -47,7 +47,7 @@
             </tig_routigo>
         </carriers>
         <tig_routigo>
-            <supported_magento_version>2.3.6-p1, 2.4.0 - 2.4.2</supported_magento_version>
+            <supported_magento_version>2.3.6 - 2.3.7-p4, 2.4.0 - 2.4.5</supported_magento_version>
             <configuration>
                 <mode>0</mode>
             </configuration>

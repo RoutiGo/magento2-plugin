@@ -90,6 +90,7 @@ class Shipping
 
     /**
      * @param $address
+     * @param $quote
      *
      * @return mixed|null
      */

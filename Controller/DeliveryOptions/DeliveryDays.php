@@ -239,7 +239,9 @@ class DeliveryDays extends AbstractDeliveryOptions
         $firstPossibleDeliveryDay  = date('j M Y', strtotime($date));
 
         foreach ($deliveryDays as $key => &$day) {
-            if ($day['deliveryDate'] === $firstPossibleDeliveryDay && date('H:i:s', strtotime('+ 2 hours')) > $cuttOffTime) {
+            if ($day['deliveryDate'] === $firstPossibleDeliveryDay
+                && date('H:i:s', strtotime('+ 2 hours')) > $cuttOffTime
+            ) {
                 $day = $this->setNewDeliveryDate($day, $dateTime);
                 unset($deliveryDays[$key]);
                 array_push($deliveryDays, $day);

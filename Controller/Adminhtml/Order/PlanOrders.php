@@ -109,7 +109,8 @@ class PlanOrders extends Action implements HttpPostActionInterface
         }
 
         $result = $this->uploadStop->upload($this->createShipment->getCreatedShipments());
-        $this->messageManager->addSuccessMessage(sprintf('Sucessfully planned orders in RoutiGo. The trackingId is %s', $result['trackingId']));
+        $message = sprintf('Sucessfully planned orders in RoutiGo. The trackingId is %s', $result['trackingId']);
+        $this->messageManager->addSuccessMessage($message);
 
         return $this->_redirect('sales/order/index');
     }

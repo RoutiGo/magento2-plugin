@@ -114,7 +114,7 @@ class CreateShipment
             $shipment = $this->convertOrder->toShipment($order);
 
             foreach ($order->getAllItems() as $orderItem) {
-               $this->addShipmentItems($orderItem, $shipment);
+                $this->addShipmentItems($orderItem, $shipment);
             }
 
             $shipment->register();
@@ -126,8 +126,10 @@ class CreateShipment
                 $this->orderRepository->save($order);
                 $this->createdShipments[] = $shipment;
             } catch (Exception $exception) {
+                $message = 'Something went wrong while creating the shipment with orderid: '
+                    . $order->getId() . ', ' . $exception->getMessage();
                 $this->messageManager->addErrorMessage($exception->getMessage());
-                $this->logger->critical('Something went wrong while creating the shipment with orderid: ' . $order->getId() . ', ' .$exception->getMessage());
+                $this->logger->critical($message);
             }
         } else {
             foreach ($order->getShipmentsCollection()->getItems() as $shipment) {

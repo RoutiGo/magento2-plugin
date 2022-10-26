@@ -92,7 +92,7 @@ class UploadStop
     public function upload($shipments)
     {
         $data = [];
-        foreach($shipments as $shipment) {
+        foreach ($shipments as $shipment) {
             $shipmentData = [];
             $order = $shipment->getOrder();
             $quote = $this->quoteFactory->create()->loadByIdWithoutStore($order->getQuoteId());
