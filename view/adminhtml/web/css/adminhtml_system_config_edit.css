@@ -6,15 +6,14 @@
 }
 
 .routigo-section .admin__page-nav-link:after {
-    float:right;
+    float: right;
     width: 30px;
     height: 30px;
-    margin-top:-7px;
+    margin-top: -7px;
     margin-right: 3px;
-
-    background-image: url(../images/logo_tig.png) !important;
-    background-size: 30px !important;
-    background-repeat:no-repeat;
+    background-image: url(../images/logo-tig.svg);
+    background-size: contain;
+    background-repeat: no-repeat;
     content: ' ';
 }
 

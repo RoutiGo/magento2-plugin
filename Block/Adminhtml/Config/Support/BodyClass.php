@@ -30,7 +30,7 @@
  * @license     http://creativecommons.org/licenses/by-nc-nd/3.0/nl/deed.en_US
  */
 
-namespace TIG\Routigo\Block\Adminhtml\Config\Support;
+namespace TIG\RoutiGo\Block\Adminhtml\Config\Support;
 
 use Magento\Backend\Block\Template;
 use Magento\Framework\View\Element\BlockInterface;
@@ -40,7 +40,6 @@ class BodyClass extends Template implements BlockInterface
     /**
      * @return \Magento\Backend\Block\Template
      */
-    // @codingStandardsIgnoreLine
     protected function _prepareLayout()
     {
         if ($this->_request->getParam('section') == 'tig_routigo') {

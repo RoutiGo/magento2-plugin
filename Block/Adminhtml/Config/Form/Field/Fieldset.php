@@ -29,7 +29,7 @@
  * @copyright   Copyright (c) Total Internet Group B.V. https://tig.nl/copyright
  * @license     http://creativecommons.org/licenses/by-nc-nd/3.0/nl/deed.en_US
  */
-namespace TIG\Routigo\Block\Adminhtml\Config\Form\Field;
+namespace TIG\RoutiGo\Block\Adminhtml\Config\Form\Field;
 
 use Magento\Config\Block\System\Config\Form\Fieldset as MagentoFieldset;
 
@@ -46,7 +46,6 @@ class Fieldset extends MagentoFieldset
     /**
      * {@inheritdoc}
      */
-    // @codingStandardsIgnoreLine
     protected function _getFrontendClass($element)
     {
         $mode = $this->_scopeConfig->getValue(static::XPATH_ROUTIGO_GENERAL_MODE);

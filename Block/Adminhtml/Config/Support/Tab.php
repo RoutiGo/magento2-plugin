@@ -30,7 +30,7 @@
  * @license     http://creativecommons.org/licenses/by-nc-nd/3.0/nl/deed.en_US
  */
 
-namespace TIG\Routigo\Block\Adminhtml\Config\Support;
+namespace TIG\RoutiGo\Block\Adminhtml\Config\Support;
 
 use Magento\Framework\App\Config\ScopeConfigInterface;
 use Magento\Framework\App\ProductMetadataInterface;
@@ -40,12 +40,11 @@ use Magento\Framework\Data\Form\Element\AbstractElement;
 
 class Tab extends Template implements RendererInterface
 {
-    const MODULE_NAME       = 'TIG_Routigo';
-    const EXTENSION_VERSION = '1.1.0';
+    const MODULE_NAME                             = 'TIG_RoutiGo';
+    const EXTENSION_VERSION                       = '1.1.0';
     const XPATH_ROUTIGO_SUPPORTED_MAGENTO_VERSION = 'tig_routigo/supported_magento_version';
 
-    // @codingStandardsIgnoreLine
-    protected $_template = 'TIG_Routigo::config/support/tab.phtml';
+    protected $_template = 'TIG_RoutiGo::config/support/tab.phtml';
 
     /** @var array */
     private $phpVersionSupport = [
@@ -70,14 +69,14 @@ class Tab extends Template implements RendererInterface
      * @param array                    $data
      */
     public function __construct(
-        Template\Context $context,
+        Template\Context         $context,
         ProductMetadataInterface $productMetadata,
-        ScopeConfigInterface $scopeConfig,
+        ScopeConfigInterface     $scopeConfig,
         array $data = []
     ) {
         parent::__construct($context, $data);
-        $this->productMetadata      = $productMetadata;
-        $this->scopeConfig = $scopeConfig;
+        $this->productMetadata = $productMetadata;
+        $this->scopeConfig     = $scopeConfig;
     }
 
     /**
@@ -136,33 +135,28 @@ class Tab extends Template implements RendererInterface
     /**
      * @return bool|int
      */
-    /** @codingStandardsIgnoreStart */
     public function phpVersionCheck()
     {
         $magentoVersion = $this->getMagentoVersionArray();
         $phpVersion     = $this->getPhpVersionArray();
-
         if (!is_array($magentoVersion) || !is_array($phpVersion)) {
             return - 1;
         }
 
-        $magentoMajorMinor = $magentoVersion[0] . '.' . $magentoVersion[1];
-        $phpMajorMinor     = $phpVersion[0] . '.' . $phpVersion[1];
         $phpPatch          = (int) $phpVersion[2];
 
-        if (!isset($this->phpVersionSupport[$magentoMajorMinor])
-            || !isset($this->phpVersionSupport[$magentoMajorMinor][$phpMajorMinor])) {
+        if (!isset($this->phpVersionSupport[$magentoVersion['major_minor']])
+            || !isset($this->phpVersionSupport[$magentoVersion['major_minor']][$phpVersion['major_minor']])) {
             return 0;
         }
 
-        $currentVersion = $this->phpVersionSupport[$magentoMajorMinor][$phpMajorMinor];
+        $currentVersion = $this->phpVersionSupport[$magentoVersion['major_minor']][$phpVersion['major_minor']];
         if (isset($currentVersion)) {
             return $this->getPhpVersion($phpPatch, $currentVersion);
         }
 
         return - 1;
     }
-    /** @codingStandardsIgnoreEnd */
 
     /**
      * @return array|bool
@@ -173,11 +167,15 @@ class Tab extends Template implements RendererInterface
 
         if (function_exists('phpversion')) {
             $version = explode('.', phpversion());
+            $version['full_version'] = phpversion();
         }
 
         if (defined('PHP_VERSION')) {
             $version = explode('.', PHP_VERSION);
+            $version['full_version'] = PHP_VERSION;
         }
+
+        $version['major_minor'] = $version[0] . '.' . $version[1];
 
         return $version;
     }
@@ -193,6 +191,8 @@ class Tab extends Template implements RendererInterface
         if (isset($currentVersion)) {
             $version = explode('.', $currentVersion);
         }
+
+        $version['major_minor'] = $version[0] . '.' . $version[1];
 
         return $version;
     }

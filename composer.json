@@ -1,6 +1,6 @@
 {
   "name": "tig/routigo-magento2",
-  "description": "Allows you to send your order data to Routigo to set up route plans.",
+  "description": "Allows you to send your order data to RoutiGo to set up route plans.",
   "require": {
     "magento/framework": "~102.0|~103.0",
     "php": "~7.2.0|~7.3.0|~7.4.0"
@@ -20,7 +20,7 @@
       "registration.php"
     ],
     "psr-4": {
-      "TIG\\Routigo\\": ""
+      "TIG\\RoutiGo\\": ""
     }
   },
   "require-dev": {

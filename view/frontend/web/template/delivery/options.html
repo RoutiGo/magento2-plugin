@@ -1,0 +1,64 @@
+<!--
+/**
+ *
+ *          ..::..
+ *     ..::::::::::::..
+ *   ::'''''':''::'''''::
+ *   ::..  ..:  :  ....::
+ *   ::::  :::  :  :   ::
+ *   ::::  :::  :  ''' ::
+ *   ::::..:::..::.....::
+ *     ''::::::::::::''
+ *          ''::''
+ *
+ *
+ * NOTICE OF LICENSE
+ *
+ * This source file is subject to the Creative Commons License.
+ * It is available through the world-wide-web at this URL:
+ * http://creativecommons.org/licenses/by-nc-nd/3.0/nl/deed.en_US
+ * If you are unable to obtain it through the world-wide-web, please send an email
+ * to servicedesk@tig.nl so we can send you a copy immediately.
+ *
+ * DISCLAIMER
+ *
+ * Do not edit or add to this file if you wish to upgrade this module to newer
+ * versions in the future. If you wish to customize this module for your
+ * needs please contact servicedesk@tig.nl for more information.
+ *
+ * @copyright   Copyright (c) Total Internet Group B.V. https://tig.nl/copyright
+ * @license     http://creativecommons.org/licenses/by-nc-nd/3.0/nl/deed.en_US
+ */
+-->
+<div class="routigo-delivery-options" data-bind="visible: selectedMethod() == 'tig_routigo_tig_routigo'">
+        <div data-bind="foreach: { data: deliveryDays, as: 'deliveryDay'}">
+            <div class="routigo-delivery-options__day">
+                <div class="routigo-delivery-options__day__info">
+                    <div class="routigo-delivery-options__day__info__name">
+                        <div data-bind="i18n: day"></div>
+                    </div>
+                    <div class="routigo-delivery-options__day__info__date">
+                        <span data-bind="text: deliveryDate"></span>
+                    </div>
+                </div>
+
+                <!-- ko if deliveryDay.timeFrames-->
+                <div class="routigo-delivery-options__time-frames__container">
+                    <div class="routigo-delivery-options__time-frames" data-bind="foreach: { data: deliveryDay.timeFrames, as: 'timeFrame'}">
+                        <div class="routigo-delivery-options__single-time-frame">
+                            <input data-bind="attr: { value: timeFrame.fee, id: 'routigo_delivery_option--' + deliveryDay.day + '_' + $index() }" type="radio" name="routigo_delivery_option" class="radio routigo-delivery-options__radio"/>
+                            <label data-bind="attr: { deliveryDate: timeFrame.deliveryDateValue, for: 'routigo_delivery_option--' + deliveryDay.day + '_' + $index() }" class="routigo-delivery-options__label">
+                                <div data-bind="i18n: 'Between ' + timeFrame.earliest_time + ' and ' + timeFrame.latest_time"></div>
+                                <div class="routigo-delivery-options__fees">
+                                    <!-- ko if: timeFrame.fee-->
+                                    <span class="routigo-delivery-options__fees__single" data-bind="text: timeFrame.fee"></span>
+                                    <!-- /ko -->
+                                </div>
+                            </label>
+                        </div>
+                    </div>
+                </div>
+                <!-- /ko -->
+            </div>
+        </div>
+</div>

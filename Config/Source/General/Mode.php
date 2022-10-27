@@ -29,25 +29,23 @@
  * @copyright   Copyright (c) Total Internet Group B.V. https://tig.nl/copyright
  * @license     http://creativecommons.org/licenses/by-nc-nd/3.0/nl/deed.en_US
  */
-namespace TIG\Routigo\Config\Source\General;
+namespace TIG\RoutiGo\Config\Source\General;
 
 use Magento\Framework\Option\ArrayInterface;
 
 class Mode implements ArrayInterface
 {
     /**
-     * Return modus option array
+     * Return mode option array
      * @return array
      */
     public function toOptionArray()
     {
-        // @codingStandardsIgnoreStart
         $options = [
             ['value' => '1', 'label' => __('Live')],
             ['value' => '2', 'label' => __('Test')],
             ['value' => '0', 'label' => __('Off')],
         ];
-        // @codingStandardsIgnoreEnd
         return $options;
     }
 }
