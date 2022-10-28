@@ -38,10 +38,14 @@ use Magento\Quote\Model\Quote\Address\RateResult\MethodFactory;
 use Magento\Shipping\Model\Carrier\AbstractCarrier;
 use Magento\Shipping\Model\Carrier\CarrierInterface;
 use Magento\Shipping\Model\Rate\ResultFactory;
+use Magento\Shipping\Model\Tracking\Result\Status;
+use Magento\Shipping\Model\Tracking\Result\StatusFactory;
 use Psr\Log\LoggerInterface;
 
 class RoutiGo extends AbstractCarrier implements CarrierInterface
 {
+    const TRACK_URL = 'https://tracking.routigo.com/?trackingCode=%s';
+
     /**
      * @var ResultFactory
      */
@@ -56,6 +60,7 @@ class RoutiGo extends AbstractCarrier implements CarrierInterface
 
     /** @var string $_code */
     protected $_code = self::TIG_ROUTIGO;
+    private StatusFactory $trackStatusFactory;
 
     /**
      * RoutiGo constructor.
@@ -73,11 +78,13 @@ class RoutiGo extends AbstractCarrier implements CarrierInterface
         LoggerInterface      $logger,
         ResultFactory        $rateResultFactory,
         MethodFactory        $rateMethodFactory,
+        StatusFactory $trackStatusFactory,
         array $data = []
     ) {
         parent::__construct($scopeConfig, $rateErrorFactory, $logger, $data);
         $this->rateResultFactory = $rateResultFactory;
         $this->rateMethodFactory = $rateMethodFactory;
+        $this->trackStatusFactory = $trackStatusFactory;
     }
 
     /**
@@ -151,5 +158,31 @@ class RoutiGo extends AbstractCarrier implements CarrierInterface
     public function isTrackingAvailable()
     {
         return true;
+    }
+
+    /**
+     * Get tracking
+     *
+     * @param string|string[] $trackings
+     * @return Result
+     */
+    public function getTrackingInfo($trackings)
+    {
+        if (!is_array($trackings)) {
+            $trackings = [$trackings];
+        }
+        /**
+         * @var Status $trackStatus
+         */
+        $trackStatus = $this->trackStatusFactory->create();
+        foreach($trackings as $trackingId) {
+            $trackStatus->setCarrier(self::TIG_ROUTIGO);
+            $trackStatus->setCarrierTitle($this->getConfigData('title'));
+            $trackStatus->setUrl(sprintf(self::TRACK_URL, $trackingId));
+            $trackStatus->setTracking($trackingId);
+            break;
+        }
+
+        return $trackStatus;
     }
 }
