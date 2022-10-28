@@ -55,7 +55,7 @@ class RoutiGo extends AbstractCarrier implements CarrierInterface
     const TIG_ROUTIGO = 'tig_routigo';
 
     /** @var string $_code */
-    protected $_code = 'tig_routigo';
+    protected $_code = self::TIG_ROUTIGO;
 
     /**
      * RoutiGo constructor.
@@ -142,5 +142,14 @@ class RoutiGo extends AbstractCarrier implements CarrierInterface
         $method->setCost($amount);
 
         return $method;
+    }
+
+    /**
+     * Add Tracking option to shipments
+     * @return bool
+     */
+    public function isTrackingAvailable()
+    {
+        return true;
     }
 }

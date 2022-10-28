@@ -33,12 +33,14 @@
 namespace TIG\RoutiGo\Model\Config\Provider;
 
 // @codingStandardsIgnoreFile
+use TIG\RoutiGo\Model\Carrier\RoutiGo;
+
 class Carrier extends AbstractConfigProvider
 {
 
-    const XPATH_CARRIER_DELIVERYDAYS       = 'tig_routigo/routigo_settings/shipment_days';
-    const XPATH_CARRIER_CUT_OFF_TIME       = 'tig_routigo/routigo_settings/cutoff_time';
-    const XPATH_CARRIER_TIMEFRAMES         = 'tig_routigo/timeframes/allowed_timeframes';
+    const XPATH_CARRIER_DELIVERYDAYS = 'tig_routigo/routigo_settings/shipment_days';
+    const XPATH_CARRIER_CUT_OFF_TIME = 'tig_routigo/routigo_settings/cutoff_time';
+    const XPATH_CARRIER_TIMEFRAMES = 'tig_routigo/timeframes/allowed_timeframes';
     const XPATH_CARRIER_TIMEFRAMES_ENABLED = 'tig_routigo/timeframes/timeframes_active';
 
     /**
@@ -62,5 +64,45 @@ class Carrier extends AbstractConfigProvider
     public function getCutOffTime()
     {
         return $this->getConfigValue(self::XPATH_CARRIER_CUT_OFF_TIME);
+    }
+
+    /**
+     * Gets carrier Attribute from config
+     *
+     * @param $field
+     * @param $code
+     * @param $store
+     * @return mixed|null
+     *
+     * @see \Magento\Shipping\Model\Carrier\AbstractCarrier::getConfigData()
+     */
+    protected function getCarrierAttribute($field, $code, $store)
+    {
+        if (!$code) {
+            return null;
+        }
+        $path = 'carriers/' . $code . '/' . $field;
+
+        return $this->getConfigValue($path, $store);
+    }
+
+    /**
+     * @param string $code
+     * @param int|null $store
+     * @return string
+     */
+    public function getCarrierName($code = RoutiGo::TIG_ROUTIGO, $store = null)
+    {
+        return $this->getCarrierAttribute('name', $code, $store);
+    }
+
+    /**
+     * @param string $code
+     * @param int|null $store
+     * @return string
+     */
+    public function getCarrierTitle($code = RoutiGo::TIG_ROUTIGO, $store = null)
+    {
+        return $this->getCarrierAttribute('title', $code, $store);
     }
 }

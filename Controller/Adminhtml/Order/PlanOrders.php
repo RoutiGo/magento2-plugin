@@ -29,6 +29,7 @@
  * @copyright   Copyright (c) Total Internet Group B.V. https://tig.nl/copyright
  * @license     http://creativecommons.org/licenses/by-nc-nd/3.0/nl/deed.en_US
  */
+
 namespace TIG\RoutiGo\Controller\Adminhtml\Order;
 
 use Magento\Backend\App\Action;
@@ -37,7 +38,9 @@ use Magento\Backend\Model\View\Result\RedirectFactory;
 use Magento\Framework\App\Action\HttpPostActionInterface;
 use Magento\Sales\Model\Order;
 use Magento\Sales\Model\ResourceModel\Order\CollectionFactory as OrderCollectionFactory;
+use Magento\Shipping\Model\Order\TrackFactory;
 use Magento\Ui\Component\MassAction\Filter;
+use TIG\RoutiGo\Service\Shipment\AddTrack;
 use TIG\RoutiGo\Service\Shipment\CreateShipment;
 use TIG\RoutiGo\Service\Shipment\UploadStop;
 
@@ -69,34 +72,43 @@ class PlanOrders extends Action implements HttpPostActionInterface
     private $uploadStop;
 
     /**
+     * @var AddTrack
+     */
+    private $addTrack;
+
+    /**
      * PlanOrders constructor.
      *
-     * @param Context                  $context
-     * @param OrderCollectionFactory   $orderCollectionFactory
-     * @param Filter                   $filter
-     * @param CreateShipment           $createShipment
-     * @param RedirectFactory          $redirectFactory
-     * @param UploadStop               $uploadStop
+     * @param Context $context
+     * @param OrderCollectionFactory $orderCollectionFactory
+     * @param Filter $filter
+     * @param CreateShipment $createShipment
+     * @param RedirectFactory $redirectFactory
+     * @param AddTrack $addTrack
+     * @param UploadStop $uploadStop
      */
     public function __construct(
-        Context $context,
+        Context                $context,
         OrderCollectionFactory $orderCollectionFactory,
-        Filter $filter,
-        CreateShipment $createShipment,
-        RedirectFactory $redirectFactory,
-        UploadStop $uploadStop
-    ) {
+        Filter                 $filter,
+        CreateShipment         $createShipment,
+        RedirectFactory        $redirectFactory,
+        AddTrack               $addTrack,
+        UploadStop             $uploadStop
+    )
+    {
         parent::__construct($context);
         $this->orderCollectionFactory = $orderCollectionFactory;
         $this->filter = $filter;
         $this->createShipment = $createShipment;
         $this->redirectFactory = $redirectFactory;
         $this->uploadStop = $uploadStop;
+        $this->addTrack = $addTrack;
     }
 
     /**
-     * @return \Magento\Framework\App\ResponseInterface|\Magento\Framework\Controller\ResultInterface
-     * @throws \Magento\Framework\Exception\LocalizedException
+     * @return \Magento\Framework\App\ResponseInterface
+     * @throws \Magento\Framework\Exception\LocalizedException|\Zend_Http_Client_Exception
      */
     public function execute()
     {
@@ -108,8 +120,29 @@ class PlanOrders extends Action implements HttpPostActionInterface
             $this->createShipment->create($order);
         }
 
-        $result = $this->uploadStop->upload($this->createShipment->getCreatedShipments());
-        $this->messageManager->addSuccessMessage(sprintf('Sucessfully planned orders in RoutiGo. The trackingId is %s', $result['trackingId']));
+        $createdShipments = $this->createShipment->getCreatedShipments();
+
+        if (!$createdShipments) {
+            $this->messageManager->addWarningMessage(
+                'No shipments created, so no route is planned.'
+            );
+
+            return $this->_redirect('sales/order/index');
+        }
+
+        $result = $this->uploadStop->upload($createdShipments);
+
+        $this->addTrack->assignTrackingCodeToShipments(
+            $createdShipments,
+            $result['trackingId'])
+        ;
+
+        $this->messageManager->addSuccessMessage(
+            sprintf(
+                'Sucessfully planned orders in RoutiGo. The trackingId is %s',
+                $result['trackingId']
+            )
+        );
 
         return $this->_redirect('sales/order/index');
     }

@@ -99,7 +99,7 @@ class DeliveryDays extends AbstractDeliveryOptions
     public function getDeliveryDays()
     {
         $deliveryDays = $this->carrier->getDeliveryDays();
-        $deliveryDays = explode(',', $deliveryDays);
+        $deliveryDays = explode(',', (string)$deliveryDays);
         $deliveryDays = array_map(function ($key) {
             return [
                 'day' => $key
