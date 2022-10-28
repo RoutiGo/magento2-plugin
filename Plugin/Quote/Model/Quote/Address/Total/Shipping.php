@@ -86,6 +86,8 @@ class Shipping
         $title   = 'RoutiGo';
 
         $this->adjustTotals($rate['method_title'], $subject->getCode(), $address, $total, $fee, $title);
+
+        return $result;
     }
 
     /**
@@ -105,7 +107,10 @@ class Shipping
         $storeCode      = $quote->getStore()->getCode();
         $currencySymbol = $this->priceCurrency->getCurrencySymbol($storeCode);
 
-        $timeFramesFee = ltrim($timeFramesFee, $currencySymbol);
+        // "\xC2\xA0" are html space-symbols, which floatval can't parse
+        $trimSymbols = "\xC2\xA0" . $currencySymbol;
+
+        $timeFramesFee = ltrim($timeFramesFee, $trimSymbols);
         $timeFramesFee = str_replace(',', '.', $timeFramesFee);
 
         return floatval($timeFramesFee);
