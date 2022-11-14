@@ -39,7 +39,7 @@ abstract class AbstractEndpoint implements EndpointInterface
 
     private $requestData = [];
 
-    private $urlArguments;
+    private $urlArguments = [];
 
     /** @var Rest */
     private $restApi;
@@ -67,7 +67,7 @@ abstract class AbstractEndpoint implements EndpointInterface
      */
     public function getEndpointUrl()
     {
-        $endpointUrl = sprintf(static::ENDPOINT_URL);
+        $endpointUrl = sprintf(static::ENDPOINT_URL, ...$this->getUrlArguments());
 
         return $endpointUrl;
     }

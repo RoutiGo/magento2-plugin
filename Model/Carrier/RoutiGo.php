@@ -29,6 +29,7 @@
  * @copyright   Copyright (c) Total Internet Group B.V. https://tig.nl/copyright
  * @license     http://creativecommons.org/licenses/by-nc-nd/3.0/nl/deed.en_US
  */
+
 namespace TIG\RoutiGo\Model\Carrier;
 
 use Magento\Framework\App\Config\ScopeConfigInterface;
@@ -58,19 +59,26 @@ class RoutiGo extends AbstractCarrier implements CarrierInterface
 
     const TIG_ROUTIGO = 'tig_routigo';
 
-    /** @var string $_code */
+    /**
+     * @var string $_code
+     */
     protected $_code = self::TIG_ROUTIGO;
-    private StatusFactory $trackStatusFactory;
+
+
+    /**
+     * @var StatusFactory
+     */
+    private $trackStatusFactory;
 
     /**
      * RoutiGo constructor.
      *
      * @param ScopeConfigInterface $scopeConfig
-     * @param ErrorFactory         $rateErrorFactory
-     * @param LoggerInterface      $logger
-     * @param ResultFactory        $rateResultFactory
-     * @param MethodFactory        $rateMethodFactory
-     * @param array                $data
+     * @param ErrorFactory $rateErrorFactory
+     * @param LoggerInterface $logger
+     * @param ResultFactory $rateResultFactory
+     * @param MethodFactory $rateMethodFactory
+     * @param array $data
      */
     public function __construct(
         ScopeConfigInterface $scopeConfig,
@@ -78,9 +86,10 @@ class RoutiGo extends AbstractCarrier implements CarrierInterface
         LoggerInterface      $logger,
         ResultFactory        $rateResultFactory,
         MethodFactory        $rateMethodFactory,
-        StatusFactory $trackStatusFactory,
-        array $data = []
-    ) {
+        StatusFactory        $trackStatusFactory,
+        array                $data = []
+    )
+    {
         parent::__construct($scopeConfig, $rateErrorFactory, $logger, $data);
         $this->rateResultFactory = $rateResultFactory;
         $this->rateMethodFactory = $rateMethodFactory;
@@ -175,7 +184,7 @@ class RoutiGo extends AbstractCarrier implements CarrierInterface
          * @var Status $trackStatus
          */
         $trackStatus = $this->trackStatusFactory->create();
-        foreach($trackings as $trackingId) {
+        foreach ($trackings as $trackingId) {
             $trackStatus->setCarrier(self::TIG_ROUTIGO);
             $trackStatus->setCarrierTitle($this->getConfigData('title'));
             $trackStatus->setUrl(sprintf(self::TRACK_URL, $trackingId));

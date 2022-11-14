@@ -33,6 +33,8 @@
 namespace TIG\RoutiGo\Service\Shipment;
 
 use Magento\Quote\Model\QuoteFactory;
+use Magento\Sales\Api\Data\ShipmentInterface;
+use Magento\Sales\Model\ResourceModel\Order\Status\History;
 use Magento\Store\Model\Information;
 use Magento\Store\Model\StoreManagerInterface;
 use TIG\RoutiGo\Webservices\Endpoints\UploadStops;
@@ -63,24 +65,40 @@ class UploadStop
     private $quoteFactory;
 
     /**
+     * @var Information
+     */
+    private $storeInformation;
+
+    /**
+     * @var History
+     */
+    private $orderHistoryResource;
+
+    /**
      * UploadStop constructor.
      *
      * @param StoreManagerInterface $storeManager
-     * @param Information           $information
-     * @param UploadStops           $uploadStops
-     * @param QuoteFactory          $quoteFactory
+     * @param Information $information
+     * @param UploadStops $uploadStops
+     * @param QuoteFactory $quoteFactory
+     * @param Information $storeInformation
+     * @param History $orderHistoryResource
      */
     public function __construct(
         StoreManagerInterface $storeManager,
         Information           $information,
         UploadStops           $uploadStops,
-        QuoteFactory          $quoteFactory
-    ) {
-
+        QuoteFactory          $quoteFactory,
+        Information           $storeInformation,
+        History               $orderHistoryResource
+    )
+    {
         $this->storeManager = $storeManager;
-        $this->information  = $information;
-        $this->uploadStops  = $uploadStops;
+        $this->information = $information;
+        $this->uploadStops = $uploadStops;
         $this->quoteFactory = $quoteFactory;
+        $this->storeInformation = $storeInformation;
+        $this->orderHistoryResource = $orderHistoryResource;
     }
 
     /**
@@ -92,20 +110,63 @@ class UploadStop
     public function upload($shipments)
     {
         $data = [];
-        foreach($shipments as $shipment) {
+        $pickupLocation = ['addressInformation' => []];
+
+        $store = $this->storeManager->getStore();
+        $address = $this->storeInformation->getStoreInformationObject($store);
+
+        $addressParts = $this->splitStreetIntoParts($address->getData('street_line1'));
+
+        $pickupLocation['addressInformation']['name'] = $address->getData('name');
+        $pickupLocation['addressInformation']['streetName'] = $addressParts['street'];
+        $pickupLocation['addressInformation']['houseNumber'] = $addressParts['houseNumber'];
+        $pickupLocation['addressInformation']['houseNumberAddition'] = $addressParts['houseNumberAddition'];
+        $pickupLocation['addressInformation']['postcode'] = $address->getData('postcode');
+        $pickupLocation['addressInformation']['city'] = $address->getData('city');
+        $pickupLocation['addressInformation']['countryCode'] = $address->getData('country_id');
+
+        /**
+         * @var ShipmentInterface $shipment
+         */
+        foreach ($shipments as $shipment) {
             $shipmentData = [];
             $order = $shipment->getOrder();
             $quote = $this->quoteFactory->create()->loadByIdWithoutStore($order->getQuoteId());
-            $shipmentData['identifier'] = $shipment->getIncrementId();
+            $shipmentData['identifier'] = $shipment->getEntityId();
             $shipmentData['scheduledDeliveryDate'] = $this->getDeliveryDate($quote);
             $shipmentData['deliveryLocation'] = $this->getDeliveryLocation($shipment);
-
+            $shipmentData['pickupLocation'] = $pickupLocation;
             $data[] = $shipmentData;
         }
 
         $result = $this->uploadStops->call($data, true);
 
+        if ($result['http_status'] === 202 && isset($result['trackingId'])) {
+            $this->saveBatchIdAsHistoryComment($result['trackingId'], $shipments);
+        }
+
         return $result;
+    }
+
+    /**
+     * Save BatchId as Order History Comment
+     *
+     * @param $batchId
+     * @param $shipments
+     * @return void
+     * @throws \Magento\Framework\Exception\AlreadyExistsException
+     */
+    protected function saveBatchIdAsHistoryComment($batchId, $shipments)
+    {
+        /**
+         * @var ShipmentInterface $shipment
+         */
+        foreach ($shipments as $shipment) {
+            $orderHistory = $shipment->getOrder()->addCommentToStatusHistory(
+                __('Uploaded to RoutiGo with batchId %1', $batchId)
+            );
+            $this->orderHistoryResource->save($orderHistory);
+        }
     }
 
     /**
@@ -116,51 +177,39 @@ class UploadStop
     public function getDeliveryLocation($shipment)
     {
         $deliveryLocation = [];
-        $shippingAddress  = $shipment->getShippingAddress();
-        $name             = $shippingAddress->getFirstname() . ' ' . $shippingAddress->getLastname();
-        $deliveryLocation['addressInformation']['houseNumber'] = $this->getHouseNumber($shippingAddress);
-        $deliveryLocation['addressInformation']['postcode']    = $shippingAddress->getPostCode();
+        $shippingAddress = $shipment->getShippingAddress();
+        $streetParts = $this->splitStreetIntoParts($shippingAddress->getStreet()[0]);
+
+        $name = $shippingAddress->getFirstname() . ' ' . $shippingAddress->getLastname();
+        $deliveryLocation['addressInformation']['name'] = $name;
+        $deliveryLocation['addressInformation']['streetName'] = $streetParts['street'];
+        $deliveryLocation['addressInformation']['houseNumber'] = $streetParts['houseNumber'];
+        $deliveryLocation['addressInformation']['houseNumberAddition'] = $streetParts['houseNumberAddition'];
+        $deliveryLocation['addressInformation']['postcode'] = $shippingAddress->getPostCode();
+        $deliveryLocation['addressInformation']['city'] = $shippingAddress->getCity();
         $deliveryLocation['addressInformation']['countryCode'] = $shippingAddress->getCountryId();
-        $deliveryLocation['addressInformation']['name']        = $name;
-        $deliveryLocation['addressInformation']['streetName']  = $this->getStreet($shippingAddress->getStreet());
 
         return $deliveryLocation;
     }
 
     /**
-     * @param $shippingAddress
+     * Split street into parts
      *
-     * @return bool|mixed
-     */
-    public function getHouseNumber($shippingAddress)
-    {
-        if (isset($shippingAddress->getStreet()[1])) {
-            return $shippingAddress->getStreet()[1];
-        }
-
-        preg_match_all('!\d+!', $shippingAddress->getStreet()[0], $matches);
-
-        if (isset($matches[0])) {
-            $houseNumber = end($matches[0]);
-            return $houseNumber;
-        }
-
-        //error handling
-        return false;
-    }
-
-    /**
-     * @param $street
+     * @param $streetStr
      *
-     * @return string
+     * @see https://gist.github.com/R0B3RDV/e94c46c44a603e02afa2d226c6ef6367
+     * @return array
      */
-    private function getStreet($street)
+    private function splitStreetIntoParts($streetStr)
     {
-        if (!is_array($street)) {
-            return $street;
-        }
+        $aMatch         = [];
+        $pattern        = '#^([\w[:punct:] ]+) (\d{1,5})\s?([\w[:punct:]\-/]*)$#';
+        preg_match($pattern, $streetStr, $aMatch);
+        $street         = $aMatch[1] ?? $streetStr;
+        $number         = $aMatch[2] ?? '';
+        $numberAddition = $aMatch[3] ?? '';
+        return ['street' => $street, 'houseNumber' => $number, 'houseNumberAddition' => $numberAddition];
 
-        return preg_replace('/[0-9]+/', '', $street)[0];
     }
 
     /**

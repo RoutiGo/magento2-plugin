@@ -65,4 +65,5 @@
             <backend_model>Magento\Config\Model\Config\Backend\Serialized\ArraySerialized</backend_model>
         </field>
     </group>
+
 </include>

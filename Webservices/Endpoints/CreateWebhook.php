@@ -31,44 +31,9 @@
  */
 namespace TIG\RoutiGo\Webservices\Endpoints;
 
-interface EndpointInterface
+class CreateWebhook extends AbstractEndpoint
 {
-    /**
-     * @param null $requestData
-     * @param bool $includeHttpStatus
-     *
-     * @return array|mixed|\Zend_Http_Response
-     * @throws \Zend_Http_Client_Exception
-     */
-    public function call($requestData = null, $includeHttpStatus = false);
+    const ENDPOINT_URL = 'v1/webhook';
+    const METHOD       = 'POST';
 
-    /**
-     * @return string
-     */
-    public function getEndpointUrl();
-
-    /**
-     * @return string
-     */
-    public function getMethod();
-
-    /**
-     * @param array $urlArguments
-     */
-    public function setUrlArguments($urlArguments);
-
-    /**
-     * @return array
-     */
-    public function getUrlArguments();
-
-    /**
-     * @param array $requestData
-     */
-    public function setRequestData(array $requestData);
-
-    /**
-     * @return array
-     */
-    public function getRequestData();
 }

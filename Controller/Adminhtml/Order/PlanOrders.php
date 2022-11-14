@@ -34,13 +34,10 @@ namespace TIG\RoutiGo\Controller\Adminhtml\Order;
 
 use Magento\Backend\App\Action;
 use Magento\Backend\App\Action\Context;
-use Magento\Backend\Model\View\Result\RedirectFactory;
 use Magento\Framework\App\Action\HttpPostActionInterface;
 use Magento\Sales\Model\Order;
 use Magento\Sales\Model\ResourceModel\Order\CollectionFactory as OrderCollectionFactory;
-use Magento\Shipping\Model\Order\TrackFactory;
 use Magento\Ui\Component\MassAction\Filter;
-use TIG\RoutiGo\Service\Shipment\AddTrack;
 use TIG\RoutiGo\Service\Shipment\CreateShipment;
 use TIG\RoutiGo\Service\Shipment\UploadStop;
 
@@ -61,20 +58,11 @@ class PlanOrders extends Action implements HttpPostActionInterface
      */
     private $createShipment;
 
-    /**
-     * @var RedirectFactory
-     */
-    private $redirectFactory;
 
     /**
      * @var UploadStop
      */
     private $uploadStop;
-
-    /**
-     * @var AddTrack
-     */
-    private $addTrack;
 
     /**
      * PlanOrders constructor.
@@ -83,8 +71,6 @@ class PlanOrders extends Action implements HttpPostActionInterface
      * @param OrderCollectionFactory $orderCollectionFactory
      * @param Filter $filter
      * @param CreateShipment $createShipment
-     * @param RedirectFactory $redirectFactory
-     * @param AddTrack $addTrack
      * @param UploadStop $uploadStop
      */
     public function __construct(
@@ -92,8 +78,6 @@ class PlanOrders extends Action implements HttpPostActionInterface
         OrderCollectionFactory $orderCollectionFactory,
         Filter                 $filter,
         CreateShipment         $createShipment,
-        RedirectFactory        $redirectFactory,
-        AddTrack               $addTrack,
         UploadStop             $uploadStop
     )
     {
@@ -101,9 +85,7 @@ class PlanOrders extends Action implements HttpPostActionInterface
         $this->orderCollectionFactory = $orderCollectionFactory;
         $this->filter = $filter;
         $this->createShipment = $createShipment;
-        $this->redirectFactory = $redirectFactory;
         $this->uploadStop = $uploadStop;
-        $this->addTrack = $addTrack;
     }
 
     /**
@@ -130,17 +112,12 @@ class PlanOrders extends Action implements HttpPostActionInterface
             return $this->_redirect('sales/order/index');
         }
 
-        $result = $this->uploadStop->upload($createdShipments);
-
-        $this->addTrack->assignTrackingCodeToShipments(
-            $createdShipments,
-            $result['trackingId'])
-        ;
+        $this->uploadStop->upload($createdShipments);
 
         $this->messageManager->addSuccessMessage(
             sprintf(
-                'Sucessfully planned orders in RoutiGo. The trackingId is %s',
-                $result['trackingId']
+                'Sucessfully planned shipment%s in RoutiGo',
+                count($createdShipments) > 1 ? 's' : ''
             )
         );
 

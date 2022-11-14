@@ -39,6 +39,7 @@
     <type name="Magento\Quote\Model\Quote\Address\Total\Shipping">
         <plugin name="tig_routigo_shipping_after_collect" type="TIG\RoutiGo\Plugin\Quote\Model\Quote\Address\Total\Shipping" sortOrder="100" />
     </type>
+    <preference for="TIG\RoutiGo\Api\WebhookInterface" type="TIG\RoutiGo\Model\Api\Webhook" />
     <type name="TIG\RoutiGo\Logging\Log">
         <arguments>
             <argument name="name" xsi:type="string">routigo_logging</argument>
