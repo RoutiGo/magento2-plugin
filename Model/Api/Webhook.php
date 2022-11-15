@@ -34,15 +34,12 @@ namespace TIG\RoutiGo\Model\Api;
 
 use Magento\Framework\App\RequestInterface;
 use Magento\Framework\Webapi\Exception as WebapiException;
-use Magento\Sales\Api\Data\ShipmentInterface;
 use Magento\Sales\Api\Data\ShipmentInterfaceFactory;
-use Magento\Sales\Model\Order\Shipment\Track;
-use Magento\Sales\Model\Spi\ShipmentResourceInterface;
 use Magento\Shipping\Model\Order\TrackFactory;
 use TIG\RoutiGo\Api\WebhookInterface;
 use TIG\RoutiGo\Logging\Log;
-use TIG\RoutiGo\Model\Carrier\RoutiGo;
-use TIG\RoutiGo\Model\Config\Provider\Carrier;
+use TIG\RoutiGo\Model\Config\Provider\WebhookConfiguration;
+use TIG\RoutiGo\Service\Shipment\CreateShipment;
 use TIG\RoutiGo\Service\Shipment\UploadStop;
 
 class Webhook implements WebhookInterface
@@ -57,51 +54,30 @@ class Webhook implements WebhookInterface
     /**
      * @var Log
      */
-    private Log $log;
+    private $log;
 
     /**
-     * @var ShipmentResourceInterface
+     * @var CreateShipment
      */
-    private $shipmentResource;
-
-    /**
-     * @var ShipmentInterfaceFactory
-     */
-    private $shipmentFactory;
-
-    /**
-     * @var Carrier
-     */
-    private $carrierConfig;
-
-    /**
-     * @var TrackFactory
-     */
-    private $trackFactory;
+    private $createShipment;
+    private WebhookConfiguration $webhookConfiguration;
 
     /**
      * @param RequestInterface $request
      * @param Log $log
-     * @param ShipmentResourceInterface $shipmentResource
-     * @param ShipmentInterfaceFactory $shipmentFactory
-     * @param Carrier $carrierConfig
-     * @param TrackFactory $trackFactory
+     * @param CreateShipment $createShipment
      */
     public function __construct(
-        RequestInterface          $request,
-        Log                       $log,
-        ShipmentResourceInterface $shipmentResource,
-        ShipmentInterfaceFactory  $shipmentFactory,
-        Carrier                   $carrierConfig,
-        TrackFactory              $trackFactory
+        RequestInterface     $request,
+        Log                  $log,
+        CreateShipment       $createShipment,
+        WebhookConfiguration $webhookConfiguration
     )
     {
         $this->request = $request;
         $this->log = $log;
-        $this->shipmentResource = $shipmentResource;
-        $this->shipmentFactory = $shipmentFactory;
-        $this->carrierConfig = $carrierConfig;
-        $this->trackFactory = $trackFactory;
+        $this->createShipment = $createShipment;
+        $this->webhookConfiguration = $webhookConfiguration;
     }
 
     /**
@@ -109,6 +85,14 @@ class Webhook implements WebhookInterface
      */
     public function saveRoutigoData()
     {
+        $authorizationHeader = $this->request->getHeader('Authorization') ?? '';
+        if (
+            !preg_match('/^Bearer ([0-9a-z]+)$/i', $authorizationHeader, $match) ||
+            $match[1] !== $this->webhookConfiguration->getOrCreateWebhookToken()
+        ) {
+            throw new WebapiException(__('User not authorized'), WebapiException::HTTP_FORBIDDEN, WebapiException::HTTP_FORBIDDEN);
+        }
+
         $rawContent = $this->request->getContent();
         $params = json_decode($rawContent, true);
 
@@ -142,45 +126,18 @@ class Webhook implements WebhookInterface
             $splitParcelId = explode('_', $tourLeg['parcelId']);
 
             if (count($splitParcelId) < 2) {
-                $this->log->debug(sprintf('Cannot get shipment ID from %s', $splitParcelId));
+                $this->log->debug(sprintf('Cannot get Order ID from %s', $splitParcelId));
                 continue;
             }
 
             /**
-             * We pass the Shipment EntityId as Identifier, we can find this back using the first part of the parcelId
+             * We pass the Order EntityId as Identifier, we can find this back using the first part of the parcelId
              * @see UploadStop::upload()
              */
             $entityId = $splitParcelId[0];
 
-            $this->createTrackForShipmentId($entityId, $tourLeg['trackingCode']);
+            $this->createShipment->createOrUpdateOrderShipment($entityId, $tourLeg['trackingCode']);
         }
     }
 
-    /**
-     * @param string $entityId
-     * @param string $trackingId
-     * @return void
-     */
-    protected function createTrackForShipmentId($entityId, $trackingId)
-    {
-        /**
-         * @var ShipmentInterface $shipment
-         */
-        $shipment = $this->shipmentFactory->create();
-        $this->shipmentResource->load($shipment, $entityId, ShipmentInterface::ENTITY_ID);
-        if (!$shipment) {
-            return;
-        }
-
-        /**
-         * @var Track $track
-         */
-        $track = $this->trackFactory->create();
-        $track->setNumber($trackingId);
-        $track->setCarrierCode(RoutiGo::TIG_ROUTIGO);
-        $track->setTitle($this->carrierConfig->getCarrierTitle());
-        $shipment->addTrack($track);
-
-        $this->shipmentResource->save($shipment);
-    }
 }

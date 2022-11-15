@@ -91,7 +91,7 @@ class Carrier extends AbstractConfigProvider
      * @param int|null $store
      * @return string
      */
-    public function getCarrierName($code = RoutiGo::TIG_ROUTIGO, $store = null)
+    public function getCarrierName($code = RoutiGo::TIG_ROUTIGO_SHIPPING_METHOD, $store = null)
     {
         return $this->getCarrierAttribute('name', $code, $store);
     }
@@ -101,7 +101,7 @@ class Carrier extends AbstractConfigProvider
      * @param int|null $store
      * @return string
      */
-    public function getCarrierTitle($code = RoutiGo::TIG_ROUTIGO, $store = null)
+    public function getCarrierTitle($code = RoutiGo::TIG_ROUTIGO_SHIPPING_METHOD, $store = null)
     {
         return $this->getCarrierAttribute('title', $code, $store);
     }

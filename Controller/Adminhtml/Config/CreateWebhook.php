@@ -36,6 +36,8 @@ namespace TIG\RoutiGo\Controller\Adminhtml\Config;
 use Magento\Backend\App\Action;
 use Magento\Framework\Url;
 use TIG\RoutiGo\Logging\Log;
+use TIG\RoutiGo\Model\Api\Webhook;
+use TIG\RoutiGo\Model\Config\Provider\WebhookConfiguration;
 use TIG\RoutiGo\Service\Integration\TokenService;
 use TIG\RoutiGo\Webservices\Endpoints\CreateWebhook as CreateWebhookEndpoint;
 use TIG\RoutiGo\Webservices\Endpoints\ListWebhooks as ListWebhooksEndpoint;
@@ -66,13 +68,13 @@ class CreateWebhook extends Action
 
 
     /**
-     * @var TokenService
+     * @var WebhookConfiguration
      */
-    private $tokenService;
+    private $webhookConfiguration;
 
     /**
      * @param Action\Context $context
-     * @param TokenService $tokenService
+     * @param WebhookConfiguration $webhookConfiguration
      * @param Log $log
      * @param CreateWebhookEndpoint $createWebhook
      * @param ListWebhooksEndpoint $listWebhooks
@@ -80,7 +82,7 @@ class CreateWebhook extends Action
      */
     public function __construct(
         Action\Context        $context,
-        TokenService          $tokenService,
+        WebhookConfiguration  $webhookConfiguration,
         Log                   $log,
         CreateWebhookEndpoint $createWebhook,
         ListWebhooksEndpoint  $listWebhooks,
@@ -93,7 +95,7 @@ class CreateWebhook extends Action
         $this->createWebhook = $createWebhook;
         $this->frontendUrlBuilder = $frontendUrlBuilder;
         $this->listWebhooks = $listWebhooks;
-        $this->tokenService = $tokenService;
+        $this->webhookConfiguration = $webhookConfiguration;
     }
 
 
@@ -168,7 +170,7 @@ class CreateWebhook extends Action
     public function execute()
     {
         $response = $this->getResponse();
-        $token = $this->tokenService->getOrCreateIntegration();
+        $token = $this->webhookConfiguration->getOrCreateWebhookToken();
 
         if (!$token) {
             $result = [

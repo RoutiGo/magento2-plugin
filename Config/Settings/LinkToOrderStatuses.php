@@ -59,6 +59,6 @@ class LinkToOrderStatuses implements \Magento\Config\Model\Config\CommentInterfa
     {
         $url = $this->urlInterface->getUrl('sales/order_status/index');
 
-        return 'Change the state of orders uploaded to RoutiGo to this status. <br /> You can create custom order statuses <a href="' . $url . '"target="_blank">here</a>, make sure it is attached to a state.';
+        return 'Change the state of orders uploaded to RoutiGo to this status. <br /> You can create custom order statuses <a href="' . $url . '"target="_blank">here</a>, make sure your newly created status it is attached to a state (processing is adviced).';
     }
 }

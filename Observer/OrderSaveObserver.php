@@ -39,6 +39,7 @@ use Magento\Sales\Api\OrderRepositoryInterface;
 use Magento\Sales\Model\Order;
 use TIG\RoutiGo\Config\Provider\General\Configuration;
 use TIG\RoutiGo\Logging\Log;
+use TIG\RoutiGo\Model\Carrier\RoutiGo;
 use TIG\RoutiGo\Service\Shipment\CreateShipment;
 use TIG\RoutiGo\Service\Shipment\UploadStop;
 
@@ -111,17 +112,13 @@ class OrderSaveObserver implements ObserverInterface
             return;
         }
 
+        if ($order->getShippingMethod() !== RoutiGo::TIG_ROUTIGO_COMPLETE_NAME) {
+            return;
+        }
+
         if ($order->getStatus() === $autoUploadWithStatus && $order->getOrigData('status') !== $order->getData('status')) {
             try {
-                $this->createShipment->create($order);
-                if (count($this->createShipment->getErrors())) {
-                    $this->log->warning(
-                        'TIG_RoutiGo: One or more errors occurred during creation of shipments.',
-                        $this->createShipment->getErrors()
-                    );
-                }
-                $this->uploadStop->upload($this->createShipment->getCreatedShipments());
-
+                $this->uploadStop->upload([$order]);
             } catch (\Exception $exception) {
                 $this->log->error('TIG_RoutiGo: Fault during auto-upload ' . $exception->getMessage());
             }

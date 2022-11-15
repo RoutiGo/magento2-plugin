@@ -47,6 +47,12 @@ class RoutiGo extends AbstractCarrier implements CarrierInterface
 {
     const TRACK_URL = 'https://tracking.routigo.com/?trackingCode=%s';
 
+    const TIG_ROUTIGO_CARRIER_GROUP = 'tig_routigo';
+
+    const TIG_ROUTIGO_SHIPPING_METHOD = 'tig_routigo';
+
+    const TIG_ROUTIGO_COMPLETE_NAME = self::TIG_ROUTIGO_CARRIER_GROUP . '_' . self::TIG_ROUTIGO_SHIPPING_METHOD;
+
     /**
      * @var ResultFactory
      */
@@ -57,13 +63,12 @@ class RoutiGo extends AbstractCarrier implements CarrierInterface
      */
     private $rateMethodFactory;
 
-    const TIG_ROUTIGO = 'tig_routigo';
+
 
     /**
      * @var string $_code
      */
-    protected $_code = self::TIG_ROUTIGO;
-
+    protected $_code = self::TIG_ROUTIGO_SHIPPING_METHOD;
 
     /**
      * @var StatusFactory
@@ -129,7 +134,7 @@ class RoutiGo extends AbstractCarrier implements CarrierInterface
      */
     public function getAllowedMethods()
     {
-        return [self::TIG_ROUTIGO => $this->getConfigData('name')];
+        return [self::TIG_ROUTIGO_SHIPPING_METHOD => $this->getConfigData('name')];
     }
 
     /**
@@ -142,7 +147,7 @@ class RoutiGo extends AbstractCarrier implements CarrierInterface
         /** @var \Magento\Quote\Model\Quote\Address\RateResult\Method $method */
         $method = $this->rateMethodFactory->create();
 
-        $method->setCarrier(self::TIG_ROUTIGO);
+        $method->setCarrier(self::TIG_ROUTIGO_SHIPPING_METHOD);
         $method->setCarrierTitle($this->getConfigData('title'));
 
         $method->setMethod($this->_code);
@@ -185,7 +190,7 @@ class RoutiGo extends AbstractCarrier implements CarrierInterface
          */
         $trackStatus = $this->trackStatusFactory->create();
         foreach ($trackings as $trackingId) {
-            $trackStatus->setCarrier(self::TIG_ROUTIGO);
+            $trackStatus->setCarrier(self::TIG_ROUTIGO_SHIPPING_METHOD);
             $trackStatus->setCarrierTitle($this->getConfigData('title'));
             $trackStatus->setUrl(sprintf(self::TRACK_URL, $trackingId));
             $trackStatus->setTracking($trackingId);

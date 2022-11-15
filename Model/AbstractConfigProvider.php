@@ -34,11 +34,13 @@ namespace TIG\RoutiGo\Model;
 
 use Magento\Framework\App\Config\ScopeConfigInterface as ScopeConfig;
 use Magento\Store\Model\ScopeInterface;
+use Magento\Framework\App\Config\Storage\WriterInterface;
 
 abstract class AbstractConfigProvider
 {
     /** @var ScopeConfig ScopeConfig */
     private $scopeConfig;
+    private WriterInterface $configWriter;
 
     /**
      * Config constructor.
@@ -46,9 +48,12 @@ abstract class AbstractConfigProvider
      * @param ScopeConfig $scopeConfig
      */
     public function __construct(
-        ScopeConfig $scopeConfig
-    ) {
+        ScopeConfig     $scopeConfig,
+        WriterInterface $configWriter
+    )
+    {
         $this->scopeConfig = $scopeConfig;
+        $this->configWriter = $configWriter;
     }
 
     /**
@@ -60,5 +65,19 @@ abstract class AbstractConfigProvider
     public function getConfigValue($path, $store = null)
     {
         return $this->scopeConfig->getValue($path, ScopeInterface::SCOPE_STORE, $store);
+    }
+
+    /**
+     * @param $path
+     * @param $value
+     * @param $store
+     **/
+    public function setConfigValue($path, $value, $store = null)
+    {
+        if ($store !== null) {
+            $this->configWriter->save($path, $value, ScopeInterface::SCOPE_STORE, $store);
+            return;
+        }
+        $this->configWriter->save($path, $value);
     }
 }

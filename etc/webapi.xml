@@ -35,6 +35,7 @@
     <route url="/V1/routigo/webhook" method="POST">
         <service class="TIG\RoutiGo\Api\WebhookInterface" method="saveRoutigoData"/>
         <resources>
+            <!-- Since Magento 2.4.4 Bearer Tokens are rejected, we use our own stored secret for now -->
             <resource ref="anonymous" />
         </resources>
     </route>

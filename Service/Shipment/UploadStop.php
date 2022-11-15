@@ -32,11 +32,13 @@
 
 namespace TIG\RoutiGo\Service\Shipment;
 
-use Magento\Quote\Model\QuoteFactory;
+use Magento\Sales\Api\Data\OrderInterface;
 use Magento\Sales\Api\Data\ShipmentInterface;
+use Magento\Sales\Model\ResourceModel\Order;
 use Magento\Sales\Model\ResourceModel\Order\Status\History;
 use Magento\Store\Model\Information;
 use Magento\Store\Model\StoreManagerInterface;
+use TIG\RoutiGo\Config\Provider\General\Configuration;
 use TIG\RoutiGo\Webservices\Endpoints\UploadStops;
 
 /**
@@ -59,10 +61,6 @@ class UploadStop
      * @var UploadStops
      */
     private $uploadStops;
-    /**
-     * @var QuoteFactory
-     */
-    private $quoteFactory;
 
     /**
      * @var Information
@@ -75,39 +73,52 @@ class UploadStop
     private $orderHistoryResource;
 
     /**
+     * @var Configuration
+     */
+    private $routiGoConfiguration;
+
+    /**
+     * @var Order
+     */
+    private $orderResource;
+
+    /**
      * UploadStop constructor.
      *
      * @param StoreManagerInterface $storeManager
      * @param Information $information
      * @param UploadStops $uploadStops
-     * @param QuoteFactory $quoteFactory
      * @param Information $storeInformation
      * @param History $orderHistoryResource
+     * @param Order $orderResource
+     * @param Configuration $routiGoConfiguration
      */
     public function __construct(
         StoreManagerInterface $storeManager,
         Information           $information,
         UploadStops           $uploadStops,
-        QuoteFactory          $quoteFactory,
         Information           $storeInformation,
-        History               $orderHistoryResource
+        History               $orderHistoryResource,
+        Order                 $orderResource,
+        Configuration         $routiGoConfiguration
     )
     {
         $this->storeManager = $storeManager;
         $this->information = $information;
         $this->uploadStops = $uploadStops;
-        $this->quoteFactory = $quoteFactory;
         $this->storeInformation = $storeInformation;
         $this->orderHistoryResource = $orderHistoryResource;
+        $this->routiGoConfiguration = $routiGoConfiguration;
+        $this->orderResource = $orderResource;
     }
 
     /**
-     * @param $shipments
+     * @param Order\Collection|\Magento\Sales\Model\Order[] $orders
      *
      * @return array|mixed|\Zend_Http_Response
      * @throws \Zend_Http_Client_Exception
      */
-    public function upload($shipments)
+    public function upload($orders)
     {
         $data = [];
         $pickupLocation = ['addressInformation' => []];
@@ -125,16 +136,12 @@ class UploadStop
         $pickupLocation['addressInformation']['cityName'] = $address->getData('city');
         $pickupLocation['addressInformation']['countryCode'] = $address->getData('country_id');
 
-        /**
-         * @var ShipmentInterface $shipment
-         */
-        foreach ($shipments as $shipment) {
+        foreach ($orders as $order) {
             $shipmentData = [];
-            $order = $shipment->getOrder();
-            $quote = $this->quoteFactory->create()->loadByIdWithoutStore($order->getQuoteId());
-            $shipmentData['identifier'] = $shipment->getEntityId();
-            $shipmentData['scheduledDeliveryDate'] = $this->getDeliveryDate($quote);
-            $shipmentData['deliveryLocation'] = $this->getDeliveryLocation($shipment);
+
+            $shipmentData['identifier'] = $order->getEntityId();
+            $shipmentData['scheduledDeliveryDate'] = $this->getDeliveryDate($order);
+            $shipmentData['deliveryLocation'] = $this->getDeliveryLocation($order);
             $shipmentData['pickupLocation'] = $pickupLocation;
             $data[] = $shipmentData;
         }
@@ -142,7 +149,8 @@ class UploadStop
         $result = $this->uploadStops->call($data, true);
 
         if ($result['http_status'] === 202 && isset($result['trackingId'])) {
-            $this->saveBatchIdAsHistoryComment($result['trackingId'], $shipments);
+            $this->changeOrderStatusIfWanted($orders);
+            $this->saveBatchIdAsHistoryComment($result['trackingId'], $orders);
         }
 
         return $result;
@@ -152,17 +160,17 @@ class UploadStop
      * Save BatchId as Order History Comment
      *
      * @param $batchId
-     * @param $shipments
+     * @param Order\Collection|\Magento\Sales\Model\Order[] $orderCollection
      * @return void
      * @throws \Magento\Framework\Exception\AlreadyExistsException
      */
-    protected function saveBatchIdAsHistoryComment($batchId, $shipments)
+    protected function saveBatchIdAsHistoryComment($batchId, $orderCollection)
     {
         /**
          * @var ShipmentInterface $shipment
          */
-        foreach ($shipments as $shipment) {
-            $orderHistory = $shipment->getOrder()->addCommentToStatusHistory(
+        foreach ($orderCollection as $order) {
+            $orderHistory = $order->addCommentToStatusHistory(
                 __('Uploaded to RoutiGo with batchId %1', $batchId)
             );
             $this->orderHistoryResource->save($orderHistory);
@@ -170,14 +178,33 @@ class UploadStop
     }
 
     /**
-     * @param $shipment
+     * @param Order\Collection|\Magento\Sales\Model\Order[] $orders
+     * @return void
+     * @throws \Magento\Framework\Exception\AlreadyExistsException
+     */
+    protected function changeOrderStatusIfWanted($orders)
+    {
+        $changeStatusTo = $this->routiGoConfiguration->getUploadChangeToStatus();
+
+        if (!$changeStatusTo) {
+            return;
+        }
+
+        foreach ($orders as $order) {
+            $order->setStatus($changeStatusTo);
+            $this->orderResource->save($order);
+        }
+    }
+
+    /**
+     * @param OrderInterface $order
      *
      * @return array
      */
-    public function getDeliveryLocation($shipment)
+    public function getDeliveryLocation($order)
     {
         $deliveryLocation = [];
-        $shippingAddress = $shipment->getShippingAddress();
+        $shippingAddress = $order->getShippingAddress();
         $streetParts = $this->splitStreetIntoParts($shippingAddress->getStreet()[0]);
 
         $name = $shippingAddress->getFirstname() . ' ' . $shippingAddress->getLastname();
@@ -197,36 +224,34 @@ class UploadStop
      *
      * @param $streetStr
      *
-     * @see https://gist.github.com/R0B3RDV/e94c46c44a603e02afa2d226c6ef6367
      * @return array
+     * @see https://gist.github.com/R0B3RDV/e94c46c44a603e02afa2d226c6ef6367
      */
     private function splitStreetIntoParts($streetStr)
     {
-        $aMatch         = [];
-        $pattern        = '#^([\w[:punct:] ]+) (\d{1,5})\s?([\w[:punct:]\-/]*)$#';
+        $aMatch = [];
+        $pattern = '#^([\w[:punct:] ]+) (\d{1,5})\s?([\w[:punct:]\-/]*)$#';
         preg_match($pattern, $streetStr, $aMatch);
-        $street         = $aMatch[1] ?? $streetStr;
-        $number         = $aMatch[2] ?? '';
+        $street = $aMatch[1] ?? $streetStr;
+        $number = $aMatch[2] ?? '';
         $numberAddition = $aMatch[3] ?? '';
         return ['street' => $street, 'houseNumber' => $number, 'houseNumberAddition' => $numberAddition];
 
     }
 
     /**
-     * @param $quote
+     * @param OrderInterface $order
      *
      * @return string
      * @throws \Exception
      */
-    public function getDeliveryDate($quote)
+    public function getDeliveryDate($order)
     {
-        if (!$quote->getShippingAddress()->getRoutigoDeliveryDate()) {
+        if (!$order->getShippingAddress()->getRoutigoDeliveryDate()) {
             $dateTime = new \DateTime('tomorrow');
-            $date = $dateTime->format('Y-m-d');
-
-            return $date;
+            return $dateTime->format('Y-m-d');
         }
 
-        return $quote->getShippingAddress()->getRoutigoDeliveryDate();
+        return $order->getShippingAddress()->getRoutigoDeliveryDate();
     }
 }

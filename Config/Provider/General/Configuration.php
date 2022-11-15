@@ -35,12 +35,14 @@ namespace TIG\RoutiGo\Config\Provider\General;
 use Magento\Framework\App\Config\ScopeConfigInterface as ScopeConfig;
 use Magento\Framework\Encryption\EncryptorInterface;
 use TIG\RoutiGo\Model\AbstractConfigProvider;
+use Magento\Framework\App\Config\Storage\WriterInterface;
 
 class Configuration extends AbstractConfigProvider
 {
     const ROUTIGO_GENERAL_MODE = 'tig_routigo/general/mode';
     const ROUTIGO_KEY = 'tig_routigo/generalconfiguration_extension_status/api_key';
     const ROUTIGO_AUTO_UPLOAD_STATUS = 'tig_routigo/upload/auto_upload_with_status';
+    const ROUTIGO_UPLOAD_CHANGE_TO_STATUS = 'tig_routigo/upload/upload_change_to_status';
 
     /**
      * @var EncryptorInterface
@@ -55,10 +57,11 @@ class Configuration extends AbstractConfigProvider
      */
     public function __construct(
         ScopeConfig        $scopeConfig,
+        WriterInterface    $writer,
         EncryptorInterface $encryptor
     )
     {
-        parent::__construct($scopeConfig);
+        parent::__construct($scopeConfig, $writer);
         $this->encryptor = $encryptor;
     }
 
@@ -134,5 +137,15 @@ class Configuration extends AbstractConfigProvider
     public function getAutoUploadWithStatus($store = null)
     {
         return $this->getConfigValue(static::ROUTIGO_AUTO_UPLOAD_STATUS, $store);
+    }
+
+    /**
+     * @param null $store
+     *
+     * @return mixed
+     */
+    public function getUploadChangeToStatus($store = null)
+    {
+        return $this->getConfigValue(static::ROUTIGO_UPLOAD_CHANGE_TO_STATUS, $store);
     }
 }

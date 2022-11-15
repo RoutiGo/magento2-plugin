@@ -29,14 +29,19 @@
  * @copyright   Copyright (c) Total Internet Group B.V. https://tig.nl/copyright
  * @license     http://creativecommons.org/licenses/by-nc-nd/3.0/nl/deed.en_US
  */
+
 namespace TIG\RoutiGo\Service\Shipment;
 
-use Exception;
-use Magento\Framework\Message\ManagerInterface;
+use Magento\Sales\Api\Data\ShipmentInterface;
 use Magento\Sales\Api\OrderRepositoryInterface;
 use Magento\Sales\Model\Convert\Order as ConvertOrder;
 use Magento\Sales\Model\Order;
+use Magento\Sales\Model\Order\Shipment\Track;
+use Magento\Sales\Model\Order\Shipment\TrackFactory;
+use Magento\Sales\Model\ResourceModel\Order\Shipment\Collection as ShipmentCollection;
 use TIG\RoutiGo\Logging\Log;
+use TIG\RoutiGo\Model\Carrier\RoutiGo;
+use TIG\RoutiGo\Model\Config\Provider\Carrier;
 
 class CreateShipment
 {
@@ -56,16 +61,6 @@ class CreateShipment
     private $convertOrder;
 
     /**
-     * @var array
-     */
-    private $errors = [];
-
-    /**
-     * @var ManagerInterface
-     */
-    private $messageManager;
-
-    /**
      * @var Log
      */
     private $logger;
@@ -75,65 +70,125 @@ class CreateShipment
      */
     private $orderRepository;
 
-    private $createdShipments;
+    /**
+     * @var TrackFactory
+     */
+    private $trackFactory;
+
+    /**
+     * @var Carrier
+     */
+    private $carrierConfig;
 
     /**
      * CreateShipment constructor.
      *
-     * @param Order\ShipmentFactory    $shipmentFactory
+     * @param Order\ShipmentFactory $shipmentFactory
      * @param Order\ShipmentRepository $shipmentRepository
      * @param OrderRepositoryInterface $orderRepository
-     * @param ConvertOrder             $convertOrder
-     * @param ManagerInterface         $messageManager
-     * @param Log                      $logger
+     * @param ConvertOrder $convertOrder
+     * @param Carrier $carrierConfig
+     * @param TrackFactory $trackFactory
+     * @param Log $logger
      */
     public function __construct(
         Order\ShipmentFactory    $shipmentFactory,
         Order\ShipmentRepository $shipmentRepository,
         OrderRepositoryInterface $orderRepository,
         ConvertOrder             $convertOrder,
-        ManagerInterface         $messageManager,
+        Carrier                  $carrierConfig,
+        TrackFactory             $trackFactory,
         Log                      $logger
-    ) {
-        $this->shipmentFactory    = $shipmentFactory;
+    )
+    {
+        $this->convertOrder = $convertOrder;
+        $this->shipmentFactory = $shipmentFactory;
         $this->shipmentRepository = $shipmentRepository;
-        $this->convertOrder       = $convertOrder;
-        $this->messageManager     = $messageManager;
-        $this->logger             = $logger;
-        $this->orderRepository    = $orderRepository;
+        $this->orderRepository = $orderRepository;
+        $this->trackFactory = $trackFactory;
+        $this->carrierConfig = $carrierConfig;
+        $this->logger = $logger;
+    }
+
+    /**
+     * @param int $orderId
+     * @param null $trackingId
+     * @throws \Magento\Framework\Exception\LocalizedException
+     */
+    public function createOrUpdateOrderShipment($orderId, $trackingId = null)
+    {
+        $order = $this->orderRepository->get($orderId);
+        if (!$order) {
+            return;
+        }
+
+        if ($order->canShip()) {
+           $this->createShipmentForOrder($order, $trackingId);
+           return;
+        }
+
+        if ($trackingId) {
+            $this->attachTrackToShipments($order->getShipmentsCollection(), $trackingId);
+        }
     }
 
     /**
      * @param Order $order
-     *
+     * @param $trackingId
+     * @return void
      * @throws \Magento\Framework\Exception\LocalizedException
      */
-    public function create(Order $order)
-    {
-        if ($order->canShip()) {
-            $shipment = $this->convertOrder->toShipment($order);
+    protected function createShipmentForOrder(Order $order, $trackingId = null) {
+        $shipment = $this->convertOrder->toShipment($order);
 
-            foreach ($order->getAllItems() as $orderItem) {
-               $this->addShipmentItems($orderItem, $shipment);
+        foreach ($order->getAllItems() as $orderItem) {
+            $this->addShipmentItems($orderItem, $shipment);
+        }
+
+        $shipment->register();
+
+        try {
+            if ($trackingId) {
+                $this->createTrackForShipment($shipment, $trackingId);
             }
+            $this->shipmentRepository->save($shipment);
+            $this->orderRepository->save($order);
+        } catch (\Exception $exception) {
+            $this->logger->critical('Something went wrong while creating the shipment for order with id: ' . $order->getEntityId() . ', ' . $exception->getMessage());
+        }
+    }
 
-            $shipment->register();
-//            $order->setState(Order::STATE_PROCESSING);
-//            $order->setStatus(Order::STATE_PROCESSING);
-
+    /**
+     * @param ShipmentInterface[]|ShipmentCollection $shipments
+     * @param $trackingId
+     * @return void
+     */
+    protected function attachTrackToShipments($shipments, $trackingId) {
+        foreach ($shipments as $shipment) {
             try {
+                $this->createTrackForShipment($shipment, $trackingId);
                 $this->shipmentRepository->save($shipment);
-                $this->orderRepository->save($order);
-                $this->createdShipments[] = $shipment;
-            } catch (Exception $exception) {
-                $this->messageManager->addErrorMessage($exception->getMessage());
-                $this->logger->critical('Something went wrong while creating the shipment with orderid: ' . $order->getId() . ', ' .$exception->getMessage());
-            }
-        } else {
-            foreach ($order->getShipmentsCollection()->getItems() as $shipment) {
-                $this->createdShipments[] = $shipment;
+            } catch (\Exception $exception) {
+                $this->logger->critical('Something went wrong while creating the tracking code for shipment with id: ' . $shipment->getEntityId() . ', ' . $exception->getMessage());
             }
         }
+    }
+
+    /**
+     * @param ShipmentInterface $shipment
+     * @param string $trackingId
+     * @return void
+     */
+    protected function createTrackForShipment($shipment, $trackingId)
+    {
+        /**
+         * @var Track $track
+         */
+        $track = $this->trackFactory->create();
+        $track->setNumber($trackingId);
+        $track->setCarrierCode(RoutiGo::TIG_ROUTIGO_SHIPPING_METHOD);
+        $track->setTitle($this->carrierConfig->getCarrierTitle());
+        $shipment->addTrack($track);
     }
 
     /**
@@ -145,26 +200,11 @@ class CreateShipment
      */
     public function addShipmentItems($orderItem, $shipment)
     {
-        $qtyShipped   = $orderItem->getQtyToShip();
+        $qtyShipped = $orderItem->getQtyToShip();
         $shipmentItem = $this->convertOrder->itemToShipmentItem($orderItem)->setQty($qtyShipped);
         $shipment->addItem($shipmentItem);
 
         return $this;
     }
 
-    /**
-     * @return array
-     */
-    public function getErrors()
-    {
-        return $this->errors;
-    }
-
-    /**
-     * @return array
-     */
-    public function getCreatedShipments()
-    {
-        return $this->createdShipments;
-    }
 }

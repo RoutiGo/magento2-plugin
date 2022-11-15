@@ -38,6 +38,7 @@ use Magento\Framework\App\Action\HttpPostActionInterface;
 use Magento\Sales\Model\Order;
 use Magento\Sales\Model\ResourceModel\Order\CollectionFactory as OrderCollectionFactory;
 use Magento\Ui\Component\MassAction\Filter;
+use TIG\RoutiGo\Model\Carrier\RoutiGo;
 use TIG\RoutiGo\Service\Shipment\CreateShipment;
 use TIG\RoutiGo\Service\Shipment\UploadStop;
 
@@ -77,14 +78,12 @@ class PlanOrders extends Action implements HttpPostActionInterface
         Context                $context,
         OrderCollectionFactory $orderCollectionFactory,
         Filter                 $filter,
-        CreateShipment         $createShipment,
         UploadStop             $uploadStop
     )
     {
         parent::__construct($context);
         $this->orderCollectionFactory = $orderCollectionFactory;
         $this->filter = $filter;
-        $this->createShipment = $createShipment;
         $this->uploadStop = $uploadStop;
     }
 
@@ -95,29 +94,23 @@ class PlanOrders extends Action implements HttpPostActionInterface
     public function execute()
     {
         $collection = $this->orderCollectionFactory->create();
+        $collection->addFilter('shipping_method', RoutiGo::TIG_ROUTIGO_COMPLETE_NAME);
         $collection = $this->filter->getCollection($collection);
 
-        /** @var Order $order */
-        foreach ($collection as $order) {
-            $this->createShipment->create($order);
-        }
-
-        $createdShipments = $this->createShipment->getCreatedShipments();
-
-        if (!$createdShipments) {
+        if ($collection->count() === 0) {
             $this->messageManager->addWarningMessage(
-                'No shipments created, so no route is planned.'
+                'No orders selected, so no stops are uploaded.'
             );
 
             return $this->_redirect('sales/order/index');
         }
 
-        $this->uploadStop->upload($createdShipments);
+        $this->uploadStop->upload($collection);
 
         $this->messageManager->addSuccessMessage(
             sprintf(
-                'Sucessfully planned shipment%s in RoutiGo',
-                count($createdShipments) > 1 ? 's' : ''
+                'Successfully added stop%s to RoutiGo',
+                $collection->count() > 1 ? 's' : ''
             )
         );
 

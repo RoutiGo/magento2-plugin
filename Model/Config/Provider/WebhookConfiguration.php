@@ -29,62 +29,67 @@
  * @copyright   Copyright (c) Total Internet Group B.V. https://tig.nl/copyright
  * @license     http://creativecommons.org/licenses/by-nc-nd/3.0/nl/deed.en_US
  */
-
 namespace TIG\RoutiGo\Model\Config\Provider;
 
 use Magento\Framework\App\Config\ScopeConfigInterface as ScopeConfig;
+use Magento\Framework\Encryption\EncryptorInterface;
+use Magento\Framework\Math\Random;
 use TIG\RoutiGo\Model\AbstractConfigProvider;
 use TIG\RoutiGo\Config\Provider\General\Configuration;
 use Magento\Framework\App\Config\Storage\WriterInterface;
 
-class ApiConfiguration extends AbstractConfigProvider
+class WebhookConfiguration extends AbstractConfigProvider
 {
-    const XPATH_ENDPOINTS_API_BASE_URL = 'tig_routigo/endpoints/api_base_url';
-    const XPATH_ENDPOINTS_TEST_API_BASE_URL = 'tig_routigo/endpoints/api_base_url';
+    const XPATH_WEBHOOK_TOKEN      = 'tig_routigo/webook/token';
 
     /** @var Configuration */
     private $configuration;
 
     /**
+     * @var EncryptorInterface
+     */
+    private $encryptor;
+
+    /**
+     * @var Random
+     */
+    private $mathRandom;
+
+    /**
      * @param ScopeConfig $scopeConfig
+     * @param WriterInterface $writer
      * @param Configuration $configuration
+     * @param EncryptorInterface $encryptor
+     * @param Random $mathRandom
      */
     public function __construct(
-        ScopeConfig     $scopeConfig,
+        ScopeConfig   $scopeConfig,
         WriterInterface $writer,
-        Configuration   $configuration
-    )
-    {
+        Configuration $configuration,
+        EncryptorInterface $encryptor,
+        Random $mathRandom
+    ) {
         parent::__construct($scopeConfig, $writer);
 
         $this->configuration = $configuration;
+        $this->encryptor = $encryptor;
+        $this->mathRandom = $mathRandom;
     }
 
     /**
      * @return mixed
+     * @throws \Magento\Framework\Exception\LocalizedException
      */
-    public function getLiveApiBaseUrl()
+    public function getOrCreateWebhookToken()
     {
-        return $this->getConfigValue(static::XPATH_ENDPOINTS_API_BASE_URL);
-    }
-
-    /**
-     * @return mixed
-     */
-    public function getTestApiBaseUrl()
-    {
-        return $this->getConfigValue(static::XPATH_ENDPOINTS_TEST_API_BASE_URL);
-    }
-
-    /**
-     * @return mixed
-     */
-    public function getModeApiBaseUrl()
-    {
-        if ($this->configuration->liveModeEnabled()) {
-            return $this->getLiveApiBaseUrl();
+        $token = $this->getConfigValue(static::XPATH_WEBHOOK_TOKEN);
+        if ($token) {
+            return $this->encryptor->decrypt($token);
         }
+        $token = $this->mathRandom->getRandomString(32);
 
-        return $this->getTestApiBaseUrl();
+        $this->setConfigValue(static::XPATH_WEBHOOK_TOKEN, $this->encryptor->encrypt($token));
+
+        return $token;
     }
 }
