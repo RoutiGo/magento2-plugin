@@ -66,4 +66,20 @@
         </field>
     </group>
 
+    <group id="upload" sortOrder="50" showInDefault="1" showInWebsite="1" showInStore="1">
+        <label>Upload</label>
+        <attribute type="expanded">1</attribute>
+        <field id="auto_upload_with_status" translate="label" type="select" sortOrder="10" showInDefault="1" showInWebsite="1" showInStore="0">
+            <label>Order status to upload automatically</label>
+            <source_model>Magento\Sales\Model\Config\Source\Order\Status</source_model>
+            <comment><![CDATA[Upload orders with this status automatically to RoutiGo]]></comment>
+        </field>
+        <field id="upload_change_to_status" translate="label" type="select" sortOrder="20" showInDefault="1" showInWebsite="1" showInStore="0">
+            <label>Change Order Statuses after automatic upload</label>
+            <source_model>Magento\Sales\Model\Config\Source\Order\Status</source_model>
+            <comment>
+                <model>TIG\RoutiGo\Config\Settings\LinkToOrderStatuses</model>
+            </comment>
+        </field>
+    </group>
 </include>

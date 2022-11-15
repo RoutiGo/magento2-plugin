@@ -118,8 +118,8 @@ class CreateShipment
             }
 
             $shipment->register();
-            $order->setState(Order::STATE_PROCESSING);
-            $order->setStatus(Order::STATE_PROCESSING);
+//            $order->setState(Order::STATE_PROCESSING);
+//            $order->setStatus(Order::STATE_PROCESSING);
 
             try {
                 $this->shipmentRepository->save($shipment);

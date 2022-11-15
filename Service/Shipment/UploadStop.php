@@ -122,7 +122,7 @@ class UploadStop
         $pickupLocation['addressInformation']['houseNumber'] = $addressParts['houseNumber'];
         $pickupLocation['addressInformation']['houseNumberAddition'] = $addressParts['houseNumberAddition'];
         $pickupLocation['addressInformation']['postcode'] = $address->getData('postcode');
-        $pickupLocation['addressInformation']['city'] = $address->getData('city');
+        $pickupLocation['addressInformation']['cityName'] = $address->getData('city');
         $pickupLocation['addressInformation']['countryCode'] = $address->getData('country_id');
 
         /**
@@ -186,7 +186,7 @@ class UploadStop
         $deliveryLocation['addressInformation']['houseNumber'] = $streetParts['houseNumber'];
         $deliveryLocation['addressInformation']['houseNumberAddition'] = $streetParts['houseNumberAddition'];
         $deliveryLocation['addressInformation']['postcode'] = $shippingAddress->getPostCode();
-        $deliveryLocation['addressInformation']['city'] = $shippingAddress->getCity();
+        $deliveryLocation['addressInformation']['cityName'] = $shippingAddress->getCity();
         $deliveryLocation['addressInformation']['countryCode'] = $shippingAddress->getCountryId();
 
         return $deliveryLocation;

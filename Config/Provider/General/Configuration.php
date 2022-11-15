@@ -39,7 +39,8 @@ use TIG\RoutiGo\Model\AbstractConfigProvider;
 class Configuration extends AbstractConfigProvider
 {
     const ROUTIGO_GENERAL_MODE = 'tig_routigo/general/mode';
-    const ROUTIGO_KEY          = 'tig_routigo/generalconfiguration_extension_status/api_key';
+    const ROUTIGO_KEY = 'tig_routigo/generalconfiguration_extension_status/api_key';
+    const ROUTIGO_AUTO_UPLOAD_STATUS = 'tig_routigo/upload/auto_upload_with_status';
 
     /**
      * @var EncryptorInterface
@@ -49,13 +50,14 @@ class Configuration extends AbstractConfigProvider
     /**
      * Configuration constructor.
      *
-     * @param ScopeConfig        $scopeConfig
+     * @param ScopeConfig $scopeConfig
      * @param EncryptorInterface $encryptor
      */
     public function __construct(
         ScopeConfig        $scopeConfig,
         EncryptorInterface $encryptor
-    ) {
+    )
+    {
         parent::__construct($scopeConfig);
         $this->encryptor = $encryptor;
     }
@@ -122,5 +124,15 @@ class Configuration extends AbstractConfigProvider
         $key = $this->getConfigValue(static::ROUTIGO_KEY, $store);
 
         return $this->encryptor->decrypt($key);
+    }
+
+    /**
+     * @param null $store
+     *
+     * @return mixed
+     */
+    public function getAutoUploadWithStatus($store = null)
+    {
+        return $this->getConfigValue(static::ROUTIGO_AUTO_UPLOAD_STATUS, $store);
     }
 }
