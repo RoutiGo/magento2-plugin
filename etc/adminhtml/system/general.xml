@@ -46,9 +46,9 @@
             <backend_model>Magento\Config\Model\Config\Backend\Encrypted</backend_model>
             <config_path>tig_routigo/generalconfiguration_extension_status/api_key</config_path>
         </field>
-        <field id="create_webhook" translate="label comment" type="button" sortOrder="30" showInDefault="1" showInWebsite="1" showInStore="1">
-            <comment><![CDATA[Please save your configuration before creating webhook.]]></comment>
-            <frontend_model>TIG\RoutiGo\Block\Adminhtml\Config\General\CreateWebhook</frontend_model>
+        <field id="validate_webhoopk" translate="label comment" type="button" sortOrder="30" showInDefault="1" showInWebsite="1" showInStore="1">
+            <comment><![CDATA[Please save your configuration before testing the validation of the webhook.]]></comment>
+            <frontend_model>TIG\RoutiGo\Block\Adminhtml\Config\General\ValidateWebhook</frontend_model>
         </field>
     </group>
 </include>

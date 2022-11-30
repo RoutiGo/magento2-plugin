@@ -36,11 +36,11 @@ use Magento\Config\Block\System\Config\Form\Field;
 use Magento\Framework\Data\Form\Element\AbstractElement;
 use Magento\Framework\Exception\LocalizedException;
 
-class CreateWebhook extends Field
+class ValidateWebhook extends Field
 {
     /** @var string */
     //@codingStandardsIgnoreLine
-    protected $_template = 'TIG_RoutiGo::config/general/createWebhook.phtml';
+    protected $_template = 'TIG_RoutiGo::config/general/validateWebhook.phtml';
 
     /**
      * Remove scope label
@@ -76,7 +76,7 @@ class CreateWebhook extends Field
      */
     public function getAjaxUrl()
     {
-        return $this->getUrl('routigo/config/createWebhook');
+        return $this->getUrl('routigo/config/validateWebhook');
     }
 
     /**
@@ -92,9 +92,9 @@ class CreateWebhook extends Field
         $buttonBlock = $layout->createBlock(Button::class);
         $buttonBlock->setData(
             [
-                'id' => 'create_webhook',
+                'id' => 'validate_webhook',
                 //@codingStandardsIgnoreLine
-                'label' => __('Create Webhook'),
+                'label' => __('Validate Webhook'),
             ]
         );
 

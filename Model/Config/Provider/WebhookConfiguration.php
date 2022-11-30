@@ -92,4 +92,12 @@ class WebhookConfiguration extends AbstractConfigProvider
 
         return $token;
     }
+
+    /**
+     * @return mixed
+     */
+    public function getWebhookToken()
+    {
+        return $this->getConfigValue(static::XPATH_WEBHOOK_TOKEN);
+    }
 }

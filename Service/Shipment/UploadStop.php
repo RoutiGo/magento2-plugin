@@ -39,6 +39,7 @@ use Magento\Sales\Model\ResourceModel\Order\Status\History;
 use Magento\Store\Model\Information;
 use Magento\Store\Model\StoreManagerInterface;
 use TIG\RoutiGo\Config\Provider\General\Configuration;
+use TIG\RoutiGo\Service\Config\Webhook;
 use TIG\RoutiGo\Webservices\Endpoints\UploadStops;
 
 /**
@@ -51,11 +52,6 @@ class UploadStop
      * @var StoreManagerInterface
      */
     private $storeManager;
-
-    /**
-     * @var Information
-     */
-    private $information;
 
     /**
      * @var UploadStops
@@ -81,12 +77,12 @@ class UploadStop
      * @var Order
      */
     private $orderResource;
+    private Webhook $webhookService;
 
     /**
      * UploadStop constructor.
      *
      * @param StoreManagerInterface $storeManager
-     * @param Information $information
      * @param UploadStops $uploadStops
      * @param Information $storeInformation
      * @param History $orderHistoryResource
@@ -95,21 +91,21 @@ class UploadStop
      */
     public function __construct(
         StoreManagerInterface $storeManager,
-        Information           $information,
         UploadStops           $uploadStops,
         Information           $storeInformation,
         History               $orderHistoryResource,
         Order                 $orderResource,
-        Configuration         $routiGoConfiguration
+        Configuration         $routiGoConfiguration,
+        Webhook               $webhookService
     )
     {
         $this->storeManager = $storeManager;
-        $this->information = $information;
         $this->uploadStops = $uploadStops;
         $this->storeInformation = $storeInformation;
         $this->orderHistoryResource = $orderHistoryResource;
         $this->routiGoConfiguration = $routiGoConfiguration;
         $this->orderResource = $orderResource;
+        $this->webhookService = $webhookService;
     }
 
     /**
@@ -151,6 +147,8 @@ class UploadStop
         if ($result['http_status'] === 202 && isset($result['trackingId'])) {
             $this->changeOrderStatusIfWanted($orders);
             $this->saveBatchIdAsHistoryComment($result['trackingId'], $orders);
+            // Upload success, lets check if we can receive data back
+            $this->webhookService->checkOrCreateWebhook();
         }
 
         return $result;

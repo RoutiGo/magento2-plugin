@@ -30,74 +30,39 @@
  * @license     http://creativecommons.org/licenses/by-nc-nd/3.0/nl/deed.en_US
  */
 
-namespace TIG\RoutiGo\Controller\Adminhtml\Config;
+namespace TIG\RoutiGo\Service\Config;
 
 
-use Magento\Backend\App\Action;
+use Magento\Framework\Exception\LocalizedException;
 use Magento\Framework\Url;
 use TIG\RoutiGo\Logging\Log;
-use TIG\RoutiGo\Model\Api\Webhook;
 use TIG\RoutiGo\Model\Config\Provider\WebhookConfiguration;
-use TIG\RoutiGo\Service\Integration\TokenService;
 use TIG\RoutiGo\Webservices\Endpoints\CreateWebhook as CreateWebhookEndpoint;
 use TIG\RoutiGo\Webservices\Endpoints\ListWebhooks as ListWebhooksEndpoint;
 
-class CreateWebhook extends Action
+class Webhook
 {
     const HEADER_AUTHORIZATION = 'Authorization';
+    private CreateWebhookEndpoint $createWebhook;
+    private ListWebhooksEndpoint $listWebhooks;
+    private Url $frontendUrlBuilder;
+    private WebhookConfiguration $webhookConfiguration;
+    private Log $log;
 
-    /**
-     * @var Log
-     */
-    private $log;
-
-    /**
-     * @var CreateWebhookEndpoint
-     */
-    private $createWebhook;
-
-    /**
-     * @var Url
-     */
-    private $frontendUrlBuilder;
-
-    /**
-     * @var ListWebhooksEndpoint
-     */
-    private $listWebhooks;
-
-
-    /**
-     * @var WebhookConfiguration
-     */
-    private $webhookConfiguration;
-
-    /**
-     * @param Action\Context $context
-     * @param WebhookConfiguration $webhookConfiguration
-     * @param Log $log
-     * @param CreateWebhookEndpoint $createWebhook
-     * @param ListWebhooksEndpoint $listWebhooks
-     * @param Url $frontendUrlBuilder
-     */
     public function __construct(
-        Action\Context        $context,
-        WebhookConfiguration  $webhookConfiguration,
-        Log                   $log,
         CreateWebhookEndpoint $createWebhook,
         ListWebhooksEndpoint  $listWebhooks,
-        Url                   $frontendUrlBuilder
+        Url                   $frontendUrlBuilder,
+        WebhookConfiguration  $webhookConfiguration,
+        Log                   $log
     )
     {
-        parent::__construct($context);
-
-        $this->log = $log;
         $this->createWebhook = $createWebhook;
-        $this->frontendUrlBuilder = $frontendUrlBuilder;
         $this->listWebhooks = $listWebhooks;
+        $this->frontendUrlBuilder = $frontendUrlBuilder;
         $this->webhookConfiguration = $webhookConfiguration;
+        $this->log = $log;
     }
-
 
     /**
      * @return string|null
@@ -119,7 +84,7 @@ class CreateWebhook extends Action
      * @return bool|string
      * @throws \Zend_Http_Client_Exception
      */
-    protected function createWebhook($token)
+    public function createWebhook($token)
     {
         $url = $this->getWebhookUrl();
         $webhookData = [
@@ -143,11 +108,11 @@ class CreateWebhook extends Action
     /**
      * Check if Webhook is already Created
      *
-     * @param $token
+     * @param string|null $token
      * @return bool
      * @throws \Zend_Http_Client_Exception
      */
-    protected function isWebhookAlreadyCreated($token)
+    public function isWebhookAlreadyCreated($token)
     {
         $url = $this->getWebhookUrl();
         $webhooks = $this->listWebhooks->call([]);
@@ -164,41 +129,22 @@ class CreateWebhook extends Action
     }
 
     /**
-     * @return \Magento\Framework\App\ResponseInterface
-     * @throws \Zend_Http_Client_Exception
+     * Check if Webhook exists, if not Create
+     *
+     * @return void
      */
-    public function execute()
+    public function checkOrCreateWebhook()
     {
-        $response = $this->getResponse();
-        $token = $this->webhookConfiguration->getOrCreateWebhookToken();
-
-        if (!$token) {
-            $result = [
-                'error' => true,
-                //@codingStandardsIgnoreLine
-                'message' => __('Could not create a Webhook Integration token.')
-            ];
-            return $response->representJson(\Zend_Json::encode($result));
+        try {
+            $token = $this->webhookConfiguration->getOrCreateWebhookToken();
+            if ($this->isWebhookAlreadyCreated($token)) {
+                return;
+            }
+            $this->createWebhook($token);
+        } catch (LocalizedException|\Zend_Http_Client_Exception $exception) {
+            $this->log->error($exception);
         }
-
-        if ($this->isWebhookAlreadyCreated($token)) {
-            $result = [
-                'error' => false,
-                'message' => __('Webhook already created!')
-            ];
-            return $response->representJson(\Zend_Json::encode($result));
-        }
-
-        if ($this->createWebhook($token)) {
-            $result = [
-                'error' => false,
-                'message' => __('Webhook created!')
-            ];
-            return $response->representJson(\Zend_Json::encode($result));
-        }
-
-        $result['message'] = __('An exception occured while creating the webhook.');
-
-        return $response->representJson(\Zend_Json::encode($result));
     }
+
+
 }

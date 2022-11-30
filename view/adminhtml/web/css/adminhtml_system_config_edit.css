@@ -202,3 +202,7 @@
     width:0;
     height:0;
 }
+
+#credentials_message_span .validation-message {
+    display: none;
+}
