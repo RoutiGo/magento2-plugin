@@ -38,7 +38,7 @@
                         <div data-bind="i18n: day"></div>
                     </div>
                     <div class="routigo-delivery-options__day__info__date">
-                        <span data-bind="text: deliveryDate"></span>
+                        <span data-bind="i18n: deliveryDate"></span>
                     </div>
                 </div>
 
@@ -48,7 +48,10 @@
                         <div class="routigo-delivery-options__single-time-frame">
                             <input data-bind="attr: { value: timeFrame.fee, id: 'routigo_delivery_option--' + deliveryDay.day + '_' + $index() }" type="radio" name="routigo_delivery_option" class="radio routigo-delivery-options__radio"/>
                             <label data-bind="attr: { deliveryDate: timeFrame.deliveryDateValue, for: 'routigo_delivery_option--' + deliveryDay.day + '_' + $index() }" class="routigo-delivery-options__label">
-                                <div data-bind="i18n: 'Between ' + timeFrame.earliest_time + ' and ' + timeFrame.latest_time"></div>
+                                <span data-bind="i18n: 'Between'"></span>&nbsp;
+                                <span data-bind="text: timeFrame.earliest_time"></span>&nbsp;
+                                <span data-bind="i18n: 'and'"></span>&nbsp;
+                                <span data-bind="text: timeFrame.latest_time"></span>
                                 <div class="routigo-delivery-options__fees">
                                     <!-- ko if: timeFrame.fee-->
                                     <span class="routigo-delivery-options__fees__single" data-bind="text: timeFrame.fee"></span>

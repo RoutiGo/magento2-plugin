@@ -81,7 +81,7 @@ class ValidateWebhook extends Action
             $result = [
                 'error' => true,
                 //@codingStandardsIgnoreLine
-                'message' => __('Could not create a Webhook token.')
+                'message' => __('Could not create a Webhook token')
             ];
             return $response->representJson(Zend_Json::encode($result));
         }
@@ -89,7 +89,7 @@ class ValidateWebhook extends Action
         if ($this->webhookService->isWebhookAlreadyCreated($token)) {
             $result = [
                 'error' => false,
-                'message' => __('Webhook already created!')
+                'message' => __('Webhook already created')
             ];
             return $response->representJson(Zend_Json::encode($result));
         }
@@ -102,7 +102,7 @@ class ValidateWebhook extends Action
             return $response->representJson(Zend_Json::encode($result));
         }
 
-        $result['message'] = __('An exception occurred while creating the webhook.');
+        $result['message'] = __('An exception occurred while creating the webhook');
 
         return $response->representJson(Zend_Json::encode($result));
     }
