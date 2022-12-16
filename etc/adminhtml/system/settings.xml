@@ -1,0 +1,85 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+ *
+ *
+ *          ..::..
+ *     ..::::::::::::..
+ *   ::'''''':''::'''''::
+ *   ::..  ..:  :  ....::
+ *   ::::  :::  :  :   ::
+ *   ::::  :::  :  ''' ::
+ *   ::::..:::..::.....::
+ *     ''::::::::::::''
+ *          ''::''
+ *
+ *
+ * NOTICE OF LICENSE
+ *
+ * This source file is subject to the Creative Commons License.
+ * It is available through the world-wide-web at this URL:
+ * http://creativecommons.org/licenses/by-nc-nd/3.0/nl/deed.en_US
+ * If you are unable to obtain it through the world-wide-web, please send an email
+ * to servicedesk@tig.nl so we can send you a copy immediately.
+ *
+ * DISCLAIMER
+ *
+ * Do not edit or add to this file if you wish to upgrade this module to newer
+ * versions in the future. If you wish to customize this module for your
+ * needs please contact servicedesk@tig.nl for more information.
+ *
+ * @copyright   Copyright (c) Total Internet Group B.V. https://tig.nl/copyright
+ * @license     http://creativecommons.org/licenses/by-nc-nd/3.0/nl/deed.en_US
+ *
+-->
+<include xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="urn:magento:module:Magento_Config:etc/system_include.xsd">
+    <group id="shipping" translate="label" type="text" sortOrder="20" showInDefault="1" showInWebsite="1" showInStore="1">
+        <label>Settings</label>
+        <fieldset_css>tig_routigo-sub-section</fieldset_css>
+        <field id="cutoff_time" translate="label comment" type="select" sortOrder="10" showInDefault="1" showInWebsite="1" showInStore="1" canRestore="1">
+            <label>Cutoff time</label>
+            <comment><![CDATA[When an order is placed after this time, another day will be added to the shipping duration.]]></comment>
+            <source_model>TIG\RoutiGo\Config\Source\Settings\CutOffSettings</source_model>
+            <config_path>tig_routigo/routigo_settings/cutoff_time</config_path>
+        </field>
+
+        <field id="shipment_days" translate="label comment" type="multiselect" sortOrder="40" showInDefault="1" showInWebsite="1" showInStore="1" canRestore="1">
+            <label>Shipment days</label>
+            <comment><![CDATA[Select on which days of the week orders are shipped.]]></comment>
+            <source_model>TIG\RoutiGo\Config\Source\Settings\DaysOfWeek</source_model>
+            <config_path>tig_routigo/routigo_settings/shipment_days</config_path>
+        </field>
+    </group>
+
+    <group id="timeframes" sortOrder="50" showInDefault="1" showInWebsite="1" showInStore="1">
+        <label>Timeframes</label>
+        <fieldset_css>admin__field-wide</fieldset_css>
+        <attribute type="expanded">1</attribute>
+        <field id="timeframes_active" translate="label" type="select" sortOrder="10" showInDefault="1" showInWebsite="1" showInStore="1" canRestore="1">
+            <label>Timeframes</label>
+            <source_model>Magento\Config\Model\Config\Source\Enabledisable</source_model>
+        </field>
+        <field id="allowed_timeframes" translate="label comment" sortOrder="20" showInDefault="1" showInWebsite="1" showInStore="1" canRestore="1">
+            <label>Enable available timeframes</label>
+            <comment><![CDATA[Configure the available timeframes visible for customers in the frontend.]]></comment>
+            <frontend_model>TIG\RoutiGo\Block\Adminhtml\Config\Form\Field\TimeframesArray</frontend_model>
+            <backend_model>Magento\Config\Model\Config\Backend\Serialized\ArraySerialized</backend_model>
+        </field>
+    </group>
+
+    <group id="upload" sortOrder="50" showInDefault="1" showInWebsite="1" showInStore="1">
+        <label>Upload</label>
+        <attribute type="expanded">1</attribute>
+        <field id="auto_upload_with_status" translate="label comment" type="select" sortOrder="10" showInDefault="1" showInWebsite="1" showInStore="0">
+            <label>Order status to upload automatically</label>
+            <source_model>Magento\Sales\Model\Config\Source\Order\Status</source_model>
+            <comment><![CDATA[Upload orders with this status automatically to RoutiGo]]></comment>
+        </field>
+        <field id="upload_change_to_status" translate="label" type="select" sortOrder="20" showInDefault="1" showInWebsite="1" showInStore="0">
+            <label>Change Order Statuses after automatic upload</label>
+            <source_model>Magento\Sales\Model\Config\Source\Order\Status</source_model>
+            <comment>
+                <model>TIG\RoutiGo\Config\Settings\LinkToOrderStatuses</model>
+            </comment>
+        </field>
+    </group>
+</include>
