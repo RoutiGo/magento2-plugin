@@ -1,5 +1,5 @@
 <p align="center">
-<img src="view/adminhtml/web/images/routigo-logo-large.png" alt="PostNL Logo" style="width:300px">
+<img src="view/adminhtml/web/images/routigo-logo.png" alt="RoutiGo Logo" style="width:300px">
 </p>
 
 # RoutiGo Magento 2
