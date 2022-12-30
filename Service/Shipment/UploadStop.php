@@ -117,20 +117,7 @@ class UploadStop
     public function upload($orders)
     {
         $data = [];
-        $pickupLocation = ['addressInformation' => []];
-
-        $store = $this->storeManager->getStore();
-        $address = $this->storeInformation->getStoreInformationObject($store);
-
-        $addressParts = $this->splitStreetIntoParts($address->getData('street_line1'));
-
-        $pickupLocation['addressInformation']['name'] = $address->getData('name');
-        $pickupLocation['addressInformation']['streetName'] = $addressParts['street'];
-        $pickupLocation['addressInformation']['houseNumber'] = $addressParts['houseNumber'];
-        $pickupLocation['addressInformation']['houseNumberAddition'] = $addressParts['houseNumberAddition'];
-        $pickupLocation['addressInformation']['postcode'] = $address->getData('postcode');
-        $pickupLocation['addressInformation']['cityName'] = $address->getData('city');
-        $pickupLocation['addressInformation']['countryCode'] = $address->getData('country_id');
+        $pickupLocation = $this->getPickupLocationData();
 
         foreach ($orders as $order) {
             $shipmentData = [];
@@ -152,6 +139,38 @@ class UploadStop
         }
 
         return $result;
+    }
+
+    private function getPickupLocationData()
+    {
+        $pickupLocation = ['addressInformation' => []];
+
+        $store = $this->storeManager->getStore();
+        $address = $this->storeInformation->getStoreInformationObject($store);
+
+        $addressParts = $this->splitStreetIntoParts($address->getData('street_line1'));
+
+        $pickupLocation['addressInformation']['name'] = $address->getData('name');
+        $pickupLocation['addressInformation']['streetName'] = $addressParts['street'];
+        $pickupLocation['addressInformation']['houseNumber'] = $addressParts['houseNumber'];
+        $pickupLocation['addressInformation']['houseNumberAddition'] = $addressParts['houseNumberAddition'];
+        $pickupLocation['addressInformation']['postcode'] = $address->getData('postcode');
+        $pickupLocation['addressInformation']['cityName'] = $address->getData('city');
+        $pickupLocation['addressInformation']['countryCode'] = $address->getData('country_id');
+
+        $emptyFieldCount = 0;
+        foreach ($pickupLocation['addressInformation'] as $item) {
+            if (empty($item)) {
+                $emptyFieldCount++;
+            }
+        }
+
+        // If all fields are empty, then the whole pickuplocation object should be null for the api call
+        if ($emptyFieldCount >= count($pickupLocation['addressInformation'])) {
+            $pickupLocation = null;
+        }
+
+        return $pickupLocation;
     }
 
     /**
@@ -227,6 +246,10 @@ class UploadStop
      */
     private function splitStreetIntoParts($streetStr)
     {
+        if ($streetStr === null) {
+            $streetStr = '';
+        }
+
         $aMatch = [];
         $pattern = '#^([\w[:punct:] ]+) (\d{1,5})\s?([\w[:punct:]\-/]*)$#';
         preg_match($pattern, $streetStr, $aMatch);

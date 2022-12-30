@@ -36,6 +36,9 @@
     <type name="Magento\Quote\Model\ShippingAddressManagement">
         <plugin name="routigo_shipping_address_management_before_assign" type="TIG\RoutiGo\Plugin\Quote\ShippingAddressManagement" sortOrder="100" />
     </type>
+    <type name="Magento\Quote\Model\Quote\Address\ToOrderAddress">
+        <plugin name="tig_routigo_to_order_address" type="TIG\RoutiGo\Plugin\Quote\ToOrderAddress" />
+    </type>
     <type name="Magento\Quote\Model\Quote\Address\Total\Shipping">
         <plugin name="tig_routigo_shipping_after_collect" type="TIG\RoutiGo\Plugin\Quote\Model\Quote\Address\Total\Shipping" sortOrder="100" />
     </type>
