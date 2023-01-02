@@ -70,7 +70,10 @@ class ShippingAddressManagement
 
         $extensionAttributes = $address->getExtensionAttributes();
 
-        if (!$extensionAttributes || !$extensionAttributes->getRoutigoTimeframesFee() || !$extensionAttributes->getRoutigoDeliveryDate()) {
+        if (!$extensionAttributes
+            || !$extensionAttributes->getRoutigoTimeframesFee()
+            || !$extensionAttributes->getRoutigoDeliveryDate()
+        ) {
             return $result;
         }
 

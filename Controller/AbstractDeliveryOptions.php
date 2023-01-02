@@ -38,17 +38,6 @@ use Magento\Framework\App\Action\Action;
 abstract class AbstractDeliveryOptions extends Action
 {
     /**
-     * AbstractDeliveryOptions constructor.
-     *
-     * @param Context       $context
-     */
-    public function __construct(
-        Context $context
-    ) {
-        parent::__construct($context);
-    }
-
-    /**
      * @param string $data
      * @param null   $code
      *

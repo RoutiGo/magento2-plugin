@@ -169,7 +169,10 @@ class CreateShipment
                 $this->createTrackForShipment($shipment, $trackingId);
                 $this->shipmentRepository->save($shipment);
             } catch (\Exception $exception) {
-                $this->logger->critical('Something went wrong while creating the tracking code for shipment with id: ' . $shipment->getEntityId() . ', ' . $exception->getMessage());
+ 		$message = 'Something went wrong while creating the shipment with orderid: '
+                    . $order->getId() . ', ' . $exception->getMessage();
+                $this->messageManager->addErrorMessage($exception->getMessage());
+                $this->logger->critical($message);
             }
         }
     }
