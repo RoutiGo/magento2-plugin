@@ -38,6 +38,12 @@
             <field name="routigo_delivery_date">
                 <aspect name="to_order_address" />
             </field>
+            <field name="routigo_visit_after">
+                <aspect name="to_order_address" />
+            </field>
+            <field name="routigo_visit_before">
+                <aspect name="to_order_address" />
+            </field>
         </fieldset>
     </scope>
 </config>

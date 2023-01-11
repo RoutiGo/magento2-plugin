@@ -48,11 +48,14 @@ define([
         return Component.extend({
             validateShippingInformation: function () {
 
-                var originalResult = this._super(),
+                let originalResult = this._super(),
                     shippingAddress = quote.shippingAddress(),
                     timeFramesFee   = $("input[name='routigo_delivery_option']:checked").val(),
                     labels          = $("input[name='routigo_delivery_option']:checked").prop('labels'),
-                    deliveryDate    = $(labels).attr('deliveryDate');
+                    deliveryDate    = $(labels).attr('deliveryDate'),
+                    deliveryDateVisitAfter     = $(labels).attr('deliveryDateVisitAfter'),
+                    deliveryDateVisitBefore    = $(labels).attr('deliveryDateVisitBefore');
+
 
                 if (shippingAddress.extension_attributes === undefined) {
                     shippingAddress.extension_attributes = {};
@@ -60,6 +63,8 @@ define([
 
                 shippingAddress.extension_attributes.routigo_timeframes_fee = timeFramesFee;
                 shippingAddress.extension_attributes.routigo_delivery_date  = deliveryDate;
+                shippingAddress.extension_attributes.routigo_visit_after    = deliveryDateVisitAfter;
+                shippingAddress.extension_attributes.routigo_visit_before   = deliveryDateVisitBefore;
 
                 return originalResult;
             }
