@@ -73,14 +73,20 @@ class ShippingAddressManagement
         if (!$extensionAttributes
             || !$extensionAttributes->getRoutigoTimeframesFee()
             || !$extensionAttributes->getRoutigoDeliveryDate()
+            || !$extensionAttributes->getRoutigoVisitAfter()
+            || !$extensionAttributes->getRoutigoVisitBefore()
         ) {
             return $result;
         }
 
         $timeframesFee = $extensionAttributes->getRoutigoTimeframesFee();
         $deliveryDate  = $extensionAttributes->getRoutigoDeliveryDate();
+        $visitAfter = $extensionAttributes->getRoutigoVisitAfter();
+        $visitBefore = $extensionAttributes->getRoutigoVisitBefore();
 
         $address->setRoutigoTimeframesFee($timeframesFee);
         $address->setRoutigoDeliveryDate($deliveryDate);
+        $address->setRoutigoVisitAfter($visitAfter);
+        $address->setRoutigoVisitBefore($visitBefore);
     }
 }
