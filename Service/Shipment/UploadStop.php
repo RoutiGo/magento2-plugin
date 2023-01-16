@@ -222,7 +222,7 @@ class UploadStop
     {
         $deliveryLocation = [];
         $shippingAddress = $order->getShippingAddress();
-        $streetParts = $this->splitStreetIntoParts($shippingAddress->getStreet()[0]);
+        $streetParts = $this->splitStreetIntoParts( implode(' ', $shippingAddress->getStreet()));
 
         $name = $shippingAddress->getFirstname() . ' ' . $shippingAddress->getLastname();
         $deliveryLocation['addressInformation']['name'] = $name;
@@ -233,7 +233,61 @@ class UploadStop
         $deliveryLocation['addressInformation']['cityName'] = $shippingAddress->getCity();
         $deliveryLocation['addressInformation']['countryCode'] = $shippingAddress->getCountryId();
 
+        $deliveryLocation['visitAfter'] = $this->convertTimeToISO8601($shippingAddress->getRoutigoVisitAfter());
+        $deliveryLocation['visitBefore'] = $this->convertTimeToISO8601($shippingAddress->getRoutigoVisitBefore());
+
         return $deliveryLocation;
+    }
+
+
+    /**
+     * Ex. 08:15 or 17:44 needs to be converted to PT8H or PT17H44M
+     * @param $timeDigital
+     * @return string|null
+     */
+    private function convertTimeToISO8601($timeDigital)
+    {
+        if (empty($timeDigital)) {
+            return null;
+        }
+
+        $timeParts = explode(':', $timeDigital);
+
+        if (count($timeParts) == 1) {
+            return null;
+        }
+
+        if (count($timeParts) == 2) {
+            $time = (3600 * (int) $timeParts[0]) + (60 * (int) $timeParts[1]);
+        }
+
+        if (count($timeParts) == 3) {
+            $time = (3600 * (int) $timeParts[0]) + (60 * (int) $timeParts[1]) + (int) $timeParts[2];
+        }
+
+        $units = array(
+            "H" =>        3600,
+            "M" =>          60,
+            "S" =>           1,
+        );
+
+        $str = "P";
+        $istime = false;
+
+        foreach ($units as $unitName => &$unit) {
+            $quot  = intval($time / $unit);
+            $time -= $quot * $unit;
+            $unit  = $quot;
+            if ($unit > 0) {
+                if (!$istime && in_array($unitName, array("H", "M", "S"))) { // There may be a better way to do this
+                    $str .= "T";
+                    $istime = true;
+                }
+                $str .= strval($unit) . $unitName;
+            }
+        }
+
+        return $str;
     }
 
     /**

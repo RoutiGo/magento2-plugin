@@ -45,6 +45,14 @@ class ToOrderAddress
             $result->setRoutigoTimeframesFee($address->getRoutigoTimeframesFee());
         }
 
+        if ($address->getRoutigoVisitAfter()) {
+            $result->setRoutigoVisitAfter($address->getRoutigoVisitAfter());
+        }
+
+        if ($address->getRoutigoVisitBefore()) {
+            $result->setRoutigoVisitBefore($address->getRoutigoVisitBefore());
+        }
+
         return $result;
     }
 }

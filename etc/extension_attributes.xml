@@ -35,15 +35,21 @@
     <extension_attributes for="Magento\Quote\Api\Data\AddressInterface">
         <attribute code="routigo_timeframes_fee" type="string" />
         <attribute code="routigo_delivery_date" type="string" />
+        <attribute code="routigo_visit_after" type="string" />
+        <attribute code="routigo_visit_before" type="string" />
     </extension_attributes>
 
     <extension_attributes for="Magento\Sales\Api\Data\OrderAddressInterface">
         <attribute code="routigo_timeframes_fee" type="string" />
         <attribute code="routigo_delivery_date" type="string"/>
+        <attribute code="routigo_visit_after" type="string" />
+        <attribute code="routigo_visit_before" type="string" />
     </extension_attributes>
 
     <extension_attributes for="Magento\Customer\Api\Data\AddressInterface">
         <attribute code="routigo_timeframes_fee" type="string" />
         <attribute code="routigo_delivery_date" type="string"/>
+        <attribute code="routigo_visit_after" type="string" />
+        <attribute code="routigo_visit_before" type="string" />
     </extension_attributes>
 </config>
