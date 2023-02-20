@@ -1,5 +1,5 @@
 {
-  "name": "tig/routigo-magento2",
+  "name": "routigo/magento2-plugin",
   "description": "Allows you to send your order data to RoutiGo to set up route plans.",
   "require": {
     "magento/framework": "~102.0|~103.0",
@@ -9,10 +9,19 @@
   "license": "CC-BY-NC-ND-3.0",
   "authors": [
     {
-      "name": "TIG",
-      "email": "support@tig.nl",
-      "homepage": "https://tig.nl"
+      "name": "RoutiGo",
+      "email": "team@routigo.com",
+      "homepage": "https://www.routigo.com"
     }
+  ],
+  "support": {
+    "email": "team@routigo.com",
+  },
+  "homepage": "https://routigo.com/",
+  "keywords": [
+    "RoutiGo",
+    "Official GLS extension",
+    "Magento 2"
   ],
   "version": "v1.1.0",
   "autoload": {
