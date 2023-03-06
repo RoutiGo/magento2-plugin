@@ -23,7 +23,7 @@
     "Official GLS extension",
     "Magento 2"
   ],
-  "version": "v1.1.0",
+  "version": "v1.1.2",
   "autoload": {
     "files": [
       "registration.php"
