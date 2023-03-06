@@ -21,7 +21,7 @@ php bin/magento maintenance:enable
 
 1. Install the extension:
 ~~~~shell
-composer require tig/routigo-magento2
+composer require routigo/magento2-plugin
 ~~~~
 
 2. Enable the RoutiGo Magento 2 extension
